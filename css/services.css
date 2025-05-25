@@ -1,0 +1,235 @@
+body {
+  background: linear-gradient(to right, #9c2d6a 0%, #9c2d6a 100%);
+}
+#customizationForm {
+  font-family: "Poppins", sans-serif;
+  color: #333;
+}
+#customizationForm .container {
+  max-width: 1200px;
+  padding: 2rem;
+}
+#customizationForm .section {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+#customizationForm .section.active {
+  display: block;
+  opacity: 1;
+}
+#customizationForm .card {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  transition: transform 0.3s ease;
+}
+#customizationForm .card:hover {
+  transform: translateY(-5px);
+}
+#customizationForm .nav-tabs {
+  border: none;
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+#customizationForm .nav-tabs .nav-link {
+  color: #555;
+  font-weight: 600;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+#customizationForm .nav-tabs .nav-link.active {
+  background: #20c997;
+  color: #fff;
+}
+#customizationForm .nav-tabs .nav-link:hover {
+  background: #e6f4f1;
+  color: #20c997;
+}
+#customizationForm .form-label {
+  font-weight: 600;
+  color: #444;
+}
+#customizationForm .form-control,
+#customizationForm .form-select {
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  padding: 0.75rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+#customizationForm .form-control:focus,
+#customizationForm .form-select:focus {
+  border-color: #20c997;
+  box-shadow: 0 0 8px rgba(32, 201, 151, 0.3);
+}
+#customizationForm .btn-primary {
+  background: #ff6b6b;
+  border: none;
+  border-radius: 8px;
+  padding: 1rem 2rem;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+#customizationForm .btn-primary:hover {
+  background: #ff8787;
+  transform: scale(1.05);
+}
+#customizationForm .image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+#customizationForm .image-gallery img {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  border-radius: 10px;
+  transition: transform 0.3s ease, border 0.3s ease;
+  cursor: pointer;
+  margin: 5px;
+}
+#customizationForm .image-gallery img:only-child {
+  max-width: 300px; 
+}
+
+#customizationForm .image-gallery img:hover {
+  transform: scale(1.1);
+}
+#customizationForm .image-gallery img.selected {
+  border: 3px solid #20c997;
+}
+#customizationForm .disclaimer {
+  font-style: italic;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+#customizationForm #summary {
+  background: #e6f4f1;
+  border-radius: 10px;
+  padding: 2rem;
+  margin-top: 2rem;
+}
+#customizationForm #summary h4 {
+  color: #20c997;
+}
+#customizationForm #summary ul {
+  list-style-type: none;
+  padding: 0;
+}
+#customizationForm #summary ul li {
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  word-break: break-word;
+}
+#customizationForm .progress-bar-container {
+  position: fixed;
+  top: 80px; /* Adjust based on your header height */
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  background-color: white;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+#customizationForm .progress-bar {
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+#customizationForm .progress-bar-fill {
+  height: 100%;
+  background: #20c997;
+  transition: width 0.3s ease;
+}
+#customizationForm .table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+#customizationForm .table th,
+#customizationForm .table td {
+  padding: 1rem;
+  text-align: center;
+}
+#customizationForm .table thead {
+  background: #20c997;
+  color: #fff;
+}
+#customizationForm .form-check-input:checked {
+  background-color: #20c997;
+  border-color: #20c997;
+}
+#customizationForm .required-asterisk {
+  color: red;
+}
+.btn-group .btn {
+  margin: 0.25rem;
+}
+.btn-group .btn.active {
+  background-color: #20c997;
+  color: #fff;
+}
+@media (max-width: 768px) {
+  #customizationForm .container {
+    padding: 1rem;
+  }
+  #customizationForm .card {
+    padding: 1.5rem;
+  }
+  #customizationForm .nav-tabs .nav-link {
+    padding: 0.75rem 1rem;
+  }
+  #customizationForm .btn-group {
+    display: block;
+  }
+  #customizationForm .btn-group .btn {
+    width: 100%;
+    margin: 0.25rem 0;
+  }
+  #customizationForm .table {
+    overflow-x: auto;
+    display: block;
+  }
+  #customizationForm {
+    font-size: 0.9rem;
+  }
+  #customizationForm .btn-primary {
+    width: 100%;
+  }
+}
+@media (min-width: 1200px) {
+  #customizationForm .container {
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+  #customizationForm {
+    font-size: 1.1rem;
+  }
+  #customizationForm .card {
+    margin-bottom: 3rem;
+  }
+}
+#customizationForm .btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+@media (min-width: 768px) {
+  #customizationForm .table {
+    overflow-x: visible;
+  }
+}
+@media (min-width: 992px) {
+  #customizationForm #summary ul {
+    columns: 2;
+    -webkit-columns: 2;
+    -moz-columns: 2;
+  }
+}
