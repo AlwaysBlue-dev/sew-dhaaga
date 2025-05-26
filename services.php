@@ -1,15 +1,15 @@
-<?php 
+<?php
 $pageTitle = "Services - Sew Dhaaga";
 $customCss = "services.css";
-include 'header.php'; 
+include 'header.php';
 ?>
 
 <div class="container-fluid my-5">
-   <div class="d-flex justify-content-center mt-5 mb-4">
-    <h1 style="color:#f8c2d0;; font-weight: 600; margin-top: 100px; text-align: center;">
-        Are You Ready To Create Your Look?
-    </h1>
-</div>
+    <div class="d-flex justify-content-center mt-5 mb-4">
+        <h1 style="color:#f8c2d0;; font-weight: 600; margin-top: 100px; text-align: center;">
+            Are You Ready To Create Your Look?
+        </h1>
+    </div>
 
     <form id="customizationForm" action="send_email.php" method="POST">
         <input type="hidden" id="activeTab" name="activeTab" value="female">
@@ -19,18 +19,18 @@ include 'header.php';
             </div>
         </div>
 
-    <ul class="nav nav-tabs justify-content-center" id="genderTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="female-tab" data-bs-toggle="tab" data-bs-target="#female" type="button" role="tab" aria-controls="female" aria-selected="true">
-                Female
-            </button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="male-tab" data-bs-toggle="tab" data-bs-target="#male" type="button" role="tab" aria-controls="male" aria-selected="false">
-                Male
-            </button>
-        </li>
-    </ul>
+        <ul class="nav nav-tabs justify-content-center" id="genderTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="female-tab" data-bs-toggle="tab" data-bs-target="#female" type="button" role="tab" aria-controls="female" aria-selected="true">
+                    Female
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="male-tab" data-bs-toggle="tab" data-bs-target="#male" type="button" role="tab" aria-controls="male" aria-selected="false">
+                    Male
+                </button>
+            </li>
+        </ul>
 
         <div class="tab-content" id="genderTabContent">
             <div class="tab-pane fade show active" id="female" role="tabpanel" aria-labelledby="female-tab">
@@ -57,7 +57,6 @@ include 'header.php';
                             <p class="disclaimer mt-2">Disclaimer: These are base prices. Total price will be calculated at checkout.</p>
                         </div>
                     </div>
-
                     <div id="topSection" class="section card">
                         <h4>Top Section</h4>
                         <div class="mb-3">
@@ -81,14 +80,62 @@ include 'header.php';
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td>6</td><td>14</td><td>19</td></tr>
-                                <tr><td>8</td><td>14.5</td><td>20</td></tr>
-                                <tr><td>10</td><td>15</td><td>21</td></tr>
-                                <tr><td>12</td><td>15.5</td><td>22</td></tr>
-                                <tr><td>14</td><td>16</td><td>24</td></tr>
-                                <tr><td>16</td><td>17</td><td>26</td></tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>14</td>
+                                    <td>19</td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>14.5</td>
+                                    <td>20</td>
+                                </tr>
+                                <tr>
+                                    <td>10</td>
+                                    <td>15</td>
+                                    <td>21</td>
+                                </tr>
+                                <tr>
+                                    <td>12</td>
+                                    <td>15.5</td>
+                                    <td>22</td>
+                                </tr>
+                                <tr>
+                                    <td>14</td>
+                                    <td>16</td>
+                                    <td>24</td>
+                                </tr>
+                                <tr>
+                                    <td>16</td>
+                                    <td>17</td>
+                                    <td>26</td>
+                                </tr>
                             </tbody>
                         </table>
+                        <div class="mb-3">
+                            <label for="style" class="form-label">Select Style:<span class="required-asterisk">*</span></label>
+                            <div id="styleGroup" class="btn-group" role="group" aria-label="Style">
+                                <button type="button" class="btn btn-outline-primary" data-value="Kurta">Kurta</button>
+                                <button type="button" class="btn btn-outline-primary" data-value="Kameez">Kameez</button>
+                            </div>
+                            <input type="hidden" id="style" name="female[style]" value="">
+                        </div>
+                        <input type="hidden" id="styleImage" name="female[styleImage]">
+                        <div class="mb-3">
+                            <label for="neckStyle" class="form-label">Select Neck Style:<span class="required-asterisk">*</span></label>
+                            <div id="neckStyleGroup" class="btn-group" role="group" aria-label="Neck Style">
+                                <button type="button" class="btn btn-outline-primary" data-value="V-Neck">V-Neck</button>
+                                <button type="button" class="btn btn-outline-primary" data-value="Collar">Collar</button>
+                                <button type="button" class="btn btn-outline-primary" data-value="Round">Round</button>
+                            </div>
+                            <div class="image-gallery mb-3" id="styleImages"></div>
+                            <input type="hidden" id="neckStyle" name="female[neckStyle]" value="">
+                        </div>
+                        <div class="mb-3">
+                            <label for="customTopLength" class="form-label">Custom Top Length (inches): (optional)</label>
+                            <input type="number" class="form-control" id="customTopLength" name="female[customTopLength]" placeholder="e.g., 34">
+                            <small class="form-text text-muted">Example: Standard size for 5'3 top is 34 inches (above the knee).</small>
+                        </div>
                         <div class="mb-3">
                             <label for="sleeveLength" class="form-label">Select Sleeve Length:<span class="required-asterisk">*</span></label>
                             <div id="sleeveLengthGroup" class="btn-group" role="group" aria-label="Sleeve Length">
@@ -101,29 +148,10 @@ include 'header.php';
                             <input type="hidden" id="sleeveStyleImage" name="female[sleeveStyleImage]" required>
                         </div>
                         <div class="mb-3">
-                            <label for="customTopLength" class="form-label">Custom Top Length (inches): (optional)</label>
-                            <input type="number" class="form-control" id="customTopLength" name="female[customTopLength]" placeholder="e.g., 34">
-                            <small class="form-text text-muted">Example: Standard size for 5'3 top is 34 inches (above the knee).</small>
+                            <label for="customSleeveLength" class="form-label">Custom Sleeve Length (inches): (optional)</label>
+                            <input type="number" class="form-control" id="customSleeveLength" name="female[customSleeveLength]" placeholder="e.g., 20">
+                            <small class="form-text text-muted">Enter custom sleeve length if different from selected sleeve length.</small>
                         </div>
-                        <div class="mb-3">
-                            <label for="style" class="form-label">Select Style:<span class="required-asterisk">*</span></label>
-                            <div id="styleGroup" class="btn-group" role="group" aria-label="Style">
-                                <button type="button" class="btn btn-outline-primary" data-value="Kurta">Kurta</button>
-                                <button type="button" class="btn btn-outline-primary" data-value="Kameez">Kameez</button>
-                            </div>
-                            <input type="hidden" id="style" name="female[style]" value="">
-                        </div>
-                        <div class="mb-3">
-                            <label for="neckStyle" class="form-label">Select Neck Style:<span class="required-asterisk">*</span></label>
-                            <div id="neckStyleGroup" class="btn-group" role="group" aria-label="Neck Style">
-                                <button type="button" class="btn btn-outline-primary" data-value="V-Neck">V-Neck</button>
-                                <button type="button" class="btn btn-outline-primary" data-value="Collar">Collar</button>
-                                <button type="button" class="btn btn-outline-primary" data-value="Round">Round</button>
-                            </div>
-                            <input type="hidden" id="neckStyle" name="female[neckStyle]" value="">
-                        </div>
-                        <div class="image-gallery mb-3" id="styleImages"></div>
-                        <input type="hidden" id="styleImage" name="female[styleImage]">
                         <div class="mb-3">
                             <label for="damaan" class="form-label">Select Damaan:<span class="required-asterisk">*</span></label>
                             <div id="damaanGroup" class="btn-group" role="group" aria-label="Damaan">
@@ -135,7 +163,7 @@ include 'header.php';
                         <div class="image-gallery mb-3" id="damaanImages"></div>
                         <input type="hidden" id="damaanImage" name="female[damaanImage]">
                         <div class="mb-3">
-                            <label class="form-label">Do you want to add lace?<span class="required-asterisk">*</span></label>
+                            <label class="form-label">Do you want to add lace on Damaan?<span class="required-asterisk">*</span></label>
                             <div>
                                 <input type="radio" class="form-check-input" name="female[lace]" id="laceYes" value="yes">
                                 <label for="laceYes" class="form-check-label">Yes</label>
@@ -170,14 +198,12 @@ include 'header.php';
                             <div class="mb-3">
                                 <label class="form-label">Where to add lace:<span class="required-asterisk">*</span></label>
                                 <div>
-                                    <input type="checkbox" class="form-check-input" id="laceNeck" name="female[lacePosition][]" value="Neck">
-                                    <label for="laceNeck" class="form-check-label">Neck</label>
-                                    <input type="checkbox" class="form-check-input" id="laceChaak" name="female[lacePosition][]" value="Chaak">
-                                    <label for="laceChaak" class="form-check-label">Chaak</label>
-                                    <input type="checkbox" class="form-check-input" id="laceDamaanFront" name="female[lacePosition][]" value="Damaan Front">
-                                    <label for="laceDamaanFront" class="form-check-label">Damaan Front</label>
-                                    <input type="checkbox" class="form-check-input" id="laceDamaanBack" name="female[lacePosition][]" value="Damaan Back">
-                                    <label for="laceDamaanBack" class="form-check-label">Damaan Back</label>
+                                    <input type="radio" class="form-check-input" id="laceFront" name="female[lacePosition][]" value="Front">
+                                    <label for="laceFront" class="form-check-label">Front</label>
+                                    <input type="radio" class="form-check-input" id="laceBack" name="female[lacePosition][]" value="Back">
+                                    <label for="laceBack" class="form-check-label">Back</label>
+                                    <input type="radio" class="form-check-input" id="laceFrontBack" name="female[lacePosition][]" value="Front Back (Both)">
+                                    <label for="laceFrontBack" class="form-check-label">Front Back (Both)</label>
                                 </div>
                             </div>
                         </div>
@@ -216,7 +242,6 @@ include 'header.php';
                             <input type="hidden" id="buttonStyleImage" name="female[buttonStyleImage]">
                         </div>
                     </div>
-
                     <div id="bottomSection" class="section card">
                         <h4>Bottom Section</h4>
                         <div class="mb-3">
@@ -248,11 +273,36 @@ include 'header.php';
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td>8</td><td>26.5</td><td>20</td><td>12</td></tr>
-                                <tr><td>10</td><td>28</td><td>21</td><td>12.5</td></tr>
-                                <tr><td>12</td><td>29.5</td><td>22</td><td>13</td></tr>
-                                <tr><td>14</td><td>31</td><td>23</td><td>13.5</td></tr>
-                                <tr><td>16</td><td>32.5</td><td>24</td><td>14</td></tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>26.5</td>
+                                    <td>20</td>
+                                    <td>12</td>
+                                </tr>
+                                <tr>
+                                    <td>10</td>
+                                    <td>28</td>
+                                    <td>21</td>
+                                    <td>12.5</td>
+                                </tr>
+                                <tr>
+                                    <td>12</td>
+                                    <td>29.5</td>
+                                    <td>22</td>
+                                    <td>13</td>
+                                </tr>
+                                <tr>
+                                    <td>14</td>
+                                    <td>31</td>
+                                    <td>23</td>
+                                    <td>13.5</td>
+                                </tr>
+                                <tr>
+                                    <td>16</td>
+                                    <td>32.5</td>
+                                    <td>24</td>
+                                    <td>14</td>
+                                </tr>
                             </tbody>
                         </table>
                         <div class="mb-3">
@@ -378,11 +428,41 @@ include 'header.php';
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td>Kurta Length</td><td>40</td><td>42</td><td>44</td><td>46</td></tr>
-                                <tr><td>Chest</td><td>23.5</td><td>24.5</td><td>25.5</td><td>26</td></tr>
-                                <tr><td>Waist (6.5'' Down)</td><td>21.5</td><td>22.5</td><td>23.5</td><td>24.5</td></tr>
-                                <tr><td>Sleeves Length</td><td>23.5</td><td>24.5</td><td>25.5</td><td>26.5</td></tr>
-                                <tr><td>Collar</td><td>15.5</td><td>16.5</td><td>17</td><td>18</td></tr>
+                                <tr>
+                                    <td>Kurta Length</td>
+                                    <td>40</td>
+                                    <td>42</td>
+                                    <td>44</td>
+                                    <td>46</td>
+                                </tr>
+                                <tr>
+                                    <td>Chest</td>
+                                    <td>23.5</td>
+                                    <td>24.5</td>
+                                    <td>25.5</td>
+                                    <td>26</td>
+                                </tr>
+                                <tr>
+                                    <td>Waist (6.5'' Down)</td>
+                                    <td>21.5</td>
+                                    <td>22.5</td>
+                                    <td>23.5</td>
+                                    <td>24.5</td>
+                                </tr>
+                                <tr>
+                                    <td>Sleeves Length</td>
+                                    <td>23.5</td>
+                                    <td>24.5</td>
+                                    <td>25.5</td>
+                                    <td>26.5</td>
+                                </tr>
+                                <tr>
+                                    <td>Collar</td>
+                                    <td>15.5</td>
+                                    <td>16.5</td>
+                                    <td>17</td>
+                                    <td>18</td>
+                                </tr>
                             </tbody>
                         </table>
                         <div class="mb-3">
@@ -486,8 +566,22 @@ include 'header.php';
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr><td>Bottom</td><td>16</td><td>16</td><td>16</td><td>17</td><td>17</td></tr>
-                                    <tr><td>Length</td><td>39-40</td><td>40</td><td>42</td><td>44</td><td>45</td></tr>
+                                    <tr>
+                                        <td>Bottom</td>
+                                        <td>16</td>
+                                        <td>16</td>
+                                        <td>16</td>
+                                        <td>17</td>
+                                        <td>17</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Length</td>
+                                        <td>39-40</td>
+                                        <td>40</td>
+                                        <td>42</td>
+                                        <td>44</td>
+                                        <td>45</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -504,9 +598,30 @@ include 'header.php';
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr><td>Waist (Relaxed)</td><td>25</td><td>27</td><td>29</td><td>31</td><td>33</td></tr>
-                                    <tr><td>Length</td><td>38</td><td>40</td><td>42</td><td>44</td><td>45</td></tr>
-                                    <tr><td>Bottom</td><td>13</td><td>13.5</td><td>14</td><td>14.5</td><td>15</td></tr>
+                                    <tr>
+                                        <td>Waist (Relaxed)</td>
+                                        <td>25</td>
+                                        <td>27</td>
+                                        <td>29</td>
+                                        <td>31</td>
+                                        <td>33</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Length</td>
+                                        <td>38</td>
+                                        <td>40</td>
+                                        <td>42</td>
+                                        <td>44</td>
+                                        <td>45</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bottom</td>
+                                        <td>13</td>
+                                        <td>13.5</td>
+                                        <td>14</td>
+                                        <td>14.5</td>
+                                        <td>15</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

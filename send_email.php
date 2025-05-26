@@ -6,6 +6,14 @@ require 'PHPMailer/src/Exception.php';
 require 'PHPMailer/src/PHPMailer.php';
 require 'PHPMailer/src/SMTP.php';
 
+function getImageName($src) {
+    if (!$src || $src === 'Not selected') return 'Not selected';
+    $parts = explode('/', $src);
+    $fileName = $parts[count($parts) - 1];
+    $name = explode('.', $fileName)[0];
+    return 'image' . (preg_match('/\d+$/', $name, $matches) ? $matches[0] : '1');
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // SMTP Configuration
     $smtpHost = 'smtp.gmail.com';
@@ -33,8 +41,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $mail->setFrom($fromEmail, $fromName);
         $mail->isHTML(true);
 
-        // Build order summary (shared for both emails)
+        // Build order summary (for customer email)
         $summary = '<h2>Order Summary</h2>';
+        // Build complete data (for admin email)
         $completeData = '<h2>New Order Details</h2>';
 
         // Get active tab
@@ -64,8 +73,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $laceSource = $_POST['female']['laceSource'] ?? 'Not selected';
                 $laceColor = $_POST['female']['laceColor'] ?? 'Not selected';
                 $laceImage = $_POST['female']['laceImage'] ?? 'Not selected';
+                $laceImageName = getImageName($laceImage);
                 $lacePositions = !empty($_POST['female']['lacePosition']) ? implode(', ', $_POST['female']['lacePosition']) : 'Not selected';
-                $laceDetails = "Source: $laceSource, Color: $laceColor, Image: $laceImage, Positions: $lacePositions";
+                $laceDetails = "Source: $laceSource, Color: $laceColor, Image: $laceImageName, Positions: $lacePositions";
+                $laceDetailsAdmin = "Source: $laceSource, Color: $laceColor, Image: $laceImageName ($laceImage), Positions: $lacePositions";
                 $femaleData['laceSource'] = $laceSource;
                 $femaleData['laceColor'] = $laceColor;
                 $femaleData['laceImage'] = $laceImage;
@@ -76,14 +87,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Buttons Details
             $buttons = $_POST['female']['buttons'] ?? 'Not selected';
             $buttonDetails = 'None';
+            $buttonDetailsAdmin = 'None';
             if ($buttons === 'yes') {
                 $buttonType = $_POST['female']['buttonType'] ?? 'Not selected';
                 $buttonStyle = $_POST['female']['buttonStyle'] ?? 'Not selected';
                 $buttonImage = $_POST['female']['buttonImage'] ?? 'Not selected';
-                $buttonDetails = "Type: $buttonType, Style: $buttonStyle, Image: $buttonImage";
+                $buttonStyleImage = $_POST['female']['buttonStyleImage'] ?? 'Not selected';
+                $buttonImageName = getImageName($buttonImage);
+                $buttonStyleImageName = getImageName($buttonStyleImage);
+                $buttonDetails = "Type: $buttonType, Style: $buttonStyle, Image: $buttonImageName, Style Image: $buttonStyleImageName";
+                $buttonDetailsAdmin = "Type: $buttonType, Style: $buttonStyle, Image: $buttonImageName ($buttonImage), Style Image: $buttonStyleImageName ($buttonStyleImage)";
                 $femaleData['buttonType'] = $buttonType;
                 $femaleData['buttonStyle'] = $buttonStyle;
                 $femaleData['buttonImage'] = $buttonImage;
+                $femaleData['buttonStyleImage'] = $buttonStyleImage;
             }
             $femaleData['buttons'] = $buttons;
             $femaleData['buttonDetails'] = $buttonDetails;
@@ -95,11 +112,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $femaleData['bottomStyleImage'] = $_POST['female']['bottomStyleImage'] ?? 'Not selected';
             $bottomLace = $_POST['female']['bottomLace'] ?? 'Not selected';
             $bottomLaceDetails = 'None';
+            $bottomLaceDetailsAdmin = 'None';
             if ($bottomLace === 'yes') {
                 $bottomLaceSource = $_POST['female']['bottomLaceSource'] ?? 'Not selected';
                 $bottomLaceColor = $_POST['female']['bottomLaceColor'] ?? 'Not selected';
                 $bottomLaceImage = $_POST['female']['bottomLaceImage'] ?? 'Not selected';
-                $bottomLaceDetails = "Source: $bottomLaceSource, Color: $bottomLaceColor, Image: $bottomLaceImage";
+                $bottomLaceImageName = getImageName($bottomLaceImage);
+                $bottomLaceDetails = "Source: $bottomLaceSource, Color: $bottomLaceColor, Image: $bottomLaceImageName";
+                $bottomLaceDetailsAdmin = "Source: $bottomLaceSource, Color: $bottomLaceColor, Image: $bottomLaceImageName ($bottomLaceImage)";
                 $femaleData['bottomLaceSource'] = $bottomLaceSource;
                 $femaleData['bottomLaceColor'] = $bottomLaceColor;
                 $femaleData['bottomLaceImage'] = $bottomLaceImage;
@@ -110,12 +130,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Dupatta Details
             $dupattaLace = $_POST['female']['dupattaLace'] ?? 'Not selected';
             $dupattaLaceDetails = 'None';
+            $dupattaLaceDetailsAdmin = 'None';
             if ($dupattaLace === 'yes') {
                 $dupattaLaceSource = $_POST['female']['dupattaLaceSource'] ?? 'Not selected';
                 $dupattaLaceColor = $_POST['female']['dupattaLaceColor'] ?? 'Not selected';
                 $dupattaLaceImage = $_POST['female']['dupattaLaceImage'] ?? 'Not selected';
                 $dupattaLacePosition = $_POST['female']['dupattaLacePosition'] ?? 'Not selected';
-                $dupattaLaceDetails = "Source: $dupattaLaceSource, Color: $dupattaLaceColor, Image: $dupattaLaceImage, Position: $dupattaLacePosition";
+                $dupattaLaceImageName = getImageName($dupattaLaceImage);
+                $dupattaLaceDetails = "Source: $dupattaLaceSource, Color: $dupattaLaceColor, Image: $dupattaLaceImageName, Position: $dupattaLacePosition";
+                $dupattaLaceDetailsAdmin = "Source: $dupattaLaceSource, Color: $dupattaLaceColor, Image: $dupattaLaceImageName ($dupattaLaceImage), Position: $dupattaLacePosition";
                 $femaleData['dupattaLaceSource'] = $dupattaLaceSource;
                 $femaleData['dupattaLaceColor'] = $dupattaLaceColor;
                 $femaleData['dupattaLaceImage'] = $dupattaLaceImage;
@@ -128,27 +151,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $summary .= "<li>Suit Type: {$femaleData['suitType']}</li>";
             $summary .= "<li>Top Size: {$femaleData['topSize']}</li>";
             $summary .= "<li>Sleeve Length: {$femaleData['sleeveLength']}</li>";
-            $summary .= "<li>Sleeve Style Image: {$femaleData['sleeveStyleImage']}</li>";
+            $summary .= "<li>Sleeve Style Image: " . getImageName($femaleData['sleeveStyleImage']) . "</li>";
             $summary .= "<li>Custom Top Length: {$femaleData['customTopLength']} inches</li>";
             $summary .= "<li>Style: {$femaleData['style']}</li>";
-            $summary .= "<li>Style Image: {$femaleData['styleImage']}</li>";
+            $summary .= "<li>Style Image: " . getImageName($femaleData['styleImage']) . "</li>";
             $summary .= "<li>Neck Style: {$femaleData['neckStyle']}</li>";
             $summary .= "<li>Damaan: {$femaleData['damaan']}</li>";
-            $summary .= "<li>Damaan Image: {$femaleData['damaanImage']}</li>";
-            $summary .= "<li>Lace: {$femaleData['lace']} ({$femaleData['laceDetails']})</li>";
-            $summary .= "<li>Buttons: {$femaleData['buttons']} ({$femaleData['buttonDetails']})</li>";
+            $summary .= "<li>Damaan Image: " . getImageName($femaleData['damaanImage']) . "</li>";
+            $summary .= "<li>Lace: {$femaleData['lace']} ($laceDetails)</li>";
+            $summary .= "<li>Buttons: {$femaleData['buttons']} ($buttonDetails)</li>";
             $summary .= "<li>Bottom Type: {$femaleData['bottomType']}</li>";
             $summary .= "<li>Bottom Size: {$femaleData['bottomSize']}</li>";
             $summary .= "<li>Custom Bottom Length: {$femaleData['customBottomLength']} inches</li>";
-            $summary .= "<li>Bottom Style Image: {$femaleData['bottomStyleImage']}</li>";
-            $summary .= "<li>Bottom Lace: {$femaleData['bottomLace']} ({$femaleData['bottomLaceDetails']})</li>";
-            $summary .= "<li>Dupatta Lace: {$femaleData['dupattaLace']} ({$femaleData['dupattaLaceDetails']})</li>";
+            $summary .= "<li>Bottom Style Image: " . getImageName($femaleData['bottomStyleImage']) . "</li>";
+            $summary .= "<li>Bottom Lace: {$femaleData['bottomLace']} ($bottomLaceDetails)</li>";
+            $summary .= "<li>Dupatta Lace: {$femaleData['dupattaLace']} ($dupattaLaceDetails)</li>";
 
             // Add to complete data (admin email)
-            foreach ($femaleData as $key => $value) {
-                $label = ucfirst(str_replace('_', ' ', $key));
-                $completeData .= "<li>$label: " . htmlspecialchars($value) . "</li>";
-            }
+            $completeData .= "<li>Suit Type: {$femaleData['suitType']}</li>";
+            $completeData .= "<li>Top Size: {$femaleData['topSize']}</li>";
+            $completeData .= "<li>Sleeve Length: {$femaleData['sleeveLength']}</li>";
+            $completeData .= "<li>Sleeve Style Image: " . getImageName($femaleData['sleeveStyleImage']) . " ({$femaleData['sleeveStyleImage']})</li>";
+            $completeData .= "<li>Custom Top Length: {$femaleData['customTopLength']} inches</li>";
+            $completeData .= "<li>Style: {$femaleData['style']}</li>";
+            $completeData .= "<li>Style Image: " . getImageName($femaleData['styleImage']) . " ({$femaleData['styleImage']})</li>";
+            $completeData .= "<li>Neck Style: {$femaleData['neckStyle']}</li>";
+            $completeData .= "<li>Damaan: {$femaleData['damaan']}</li>";
+            $completeData .= "<li>Damaan Image: " . getImageName($femaleData['damaanImage']) . " ({$femaleData['damaanImage']})</li>";
+            $completeData .= "<li>Lace: {$femaleData['lace']} ($laceDetailsAdmin)</li>";
+            $completeData .= "<li>Buttons: {$femaleData['buttons']} ($buttonDetailsAdmin)</li>";
+            $completeData .= "<li>Bottom Type: {$femaleData['bottomType']}</li>";
+            $completeData .= "<li>Bottom Size: {$femaleData['bottomSize']}</li>";
+            $completeData .= "<li>Custom Bottom Length: {$femaleData['customBottomLength']} inches</li>";
+            $completeData .= "<li>Bottom Style Image: " . getImageName($femaleData['bottomStyleImage']) . " ({$femaleData['bottomStyleImage']})</li>";
+            $completeData .= "<li>Bottom Lace: {$femaleData['bottomLace']} ($bottomLaceDetailsAdmin)</li>";
+            $completeData .= "<li>Dupatta Lace: {$femaleData['dupattaLace']} ($dupattaLaceDetailsAdmin)</li>";
+
             $summary .= '</ul>';
             $completeData .= '</ul>';
         }
@@ -176,14 +214,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Buttons Details
             $buttonDetails = 'None';
+            $buttonDetailsAdmin = 'None';
             if ($maleData['buttons'] === 'yes') {
                 $buttonType = $_POST['male']['buttonType'] ?? 'Not selected';
                 $buttonStyle = $_POST['male']['buttonStyle'] ?? 'Not selected';
                 $buttonImage = $_POST['male']['buttonImage'] ?? 'Not selected';
-                $buttonDetails = "Type: $buttonType, Style: $buttonStyle, Image: $buttonImage";
+                $buttonStyleImage = $_POST['male']['buttonStyleImage'] ?? 'Not selected';
+                $buttonImageName = getImageName($buttonImage);
+                $buttonStyleImageName = getImageName($buttonStyleImage);
+                $buttonDetails = "Type: $buttonType, Style: $buttonStyle, Image: $buttonImageName, Style Image: $buttonStyleImageName";
+                $buttonDetailsAdmin = "Type: $buttonType, Style: $buttonStyle, Image: $buttonImageName ($buttonImage), Style Image: $buttonStyleImageName ($buttonStyleImage)";
                 $maleData['buttonType'] = $buttonType;
                 $maleData['buttonStyle'] = $buttonStyle;
                 $maleData['buttonImage'] = $buttonImage;
+                $maleData['buttonStyleImage'] = $buttonStyleImage;
             }
             $maleData['buttonDetails'] = $buttonDetails;
 
@@ -192,22 +236,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $summary .= "<li>Size: {$maleData['size']}</li>";
             $summary .= "<li>Custom Top Length: {$maleData['customTopLength']} inches</li>";
             $summary .= "<li>Collar Style: {$maleData['collarStyle']}</li>";
-            $summary .= "<li>Collar Image: {$maleData['collarImage']}</li>";
+            $summary .= "<li>Collar Image: " . getImageName($maleData['collarImage']) . "</li>";
             $summary .= "<li>Damaan: {$maleData['damaan']}</li>";
-            $summary .= "<li>Damaan Image: {$maleData['damaanImage']}</li>";
-            $summary .= "<li>Buttons: {$maleData['buttons']} ({$maleData['buttonDetails']})</li>";
+            $summary .= "<li>Damaan Image: " . getImageName($maleData['damaanImage']) . "</li>";
+            $summary .= "<li>Buttons: {$maleData['buttons']} ($buttonDetails)</li>";
             $summary .= "<li>Sleeves: {$maleData['sleeves']}</li>";
-            $summary .= "<li>Sleeves Image: {$maleData['sleevesImage']}</li>";
+            $summary .= "<li>Sleeves Image: " . getImageName($maleData['sleevesImage']) . "</li>";
             $summary .= "<li>Bottom Type: {$maleData['bottomType']}</li>";
             $summary .= "<li>Bottom Size: {$maleData['bottomSize']}</li>";
             $summary .= "<li>Custom Bottom Length: {$maleData['customBottomLength']} inches</li>";
-            $summary .= "<li>Bottom Style Image: {$maleData['bottomStyleImage']}</li>";
+            $summary .= "<li>Bottom Style Image: " . getImageName($maleData['bottomStyleImage']) . "</li>";
 
             // Add to complete data (admin email)
-            foreach ($maleData as $key => $value) {
-                $label = ucfirst(str_replace('_', ' ', $key));
-                $completeData .= "<li>$label: " . htmlspecialchars($value) . "</li>";
-            }
+            $completeData .= "<li>Style: {$maleData['style']}</li>";
+            $completeData .= "<li>Size: {$maleData['size']}</li>";
+            $completeData .= "<li>Custom Top Length: {$maleData['customTopLength']} inches</li>";
+            $completeData .= "<li>Collar Style: {$maleData['collarStyle']}</li>";
+            $completeData .= "<li>Collar Image: " . getImageName($maleData['collarImage']) . " ({$maleData['collarImage']})</li>";
+            $completeData .= "<li>Damaan: {$maleData['damaan']}</li>";
+            $completeData .= "<li>Damaan Image: " . getImageName($maleData['damaanImage']) . " ({$maleData['damaanImage']})</li>";
+            $completeData .= "<li>Buttons: {$maleData['buttons']} ($buttonDetailsAdmin)</li>";
+            $completeData .= "<li>Sleeves: {$maleData['sleeves']}</li>";
+            $completeData .= "<li>Sleeves Image: " . getImageName($maleData['sleevesImage']) . " ({$maleData['sleevesImage']})</li>";
+            $completeData .= "<li>Bottom Type: {$maleData['bottomType']}</li>";
+            $completeData .= "<li>Bottom Size: {$maleData['bottomSize']}</li>";
+            $completeData .= "<li>Custom Bottom Length: {$maleData['customBottomLength']} inches</li>";
+            $completeData .= "<li>Bottom Style Image: " . getImageName($maleData['bottomStyleImage']) . " ({$maleData['bottomStyleImage']})</li>";
+
             $summary .= '</ul>';
             $completeData .= '</ul>';
         }
