@@ -1,4 +1,5 @@
 <?php
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -6,12 +7,104 @@ require 'PHPMailer/src/Exception.php';
 require 'PHPMailer/src/PHPMailer.php';
 require 'PHPMailer/src/SMTP.php';
 
-function getImageName($src) {
+// Function to get image name
+function getImageName($src)
+{
     if (!$src || $src === 'Not selected') return 'Not selected';
     $parts = explode('/', $src);
     $fileName = $parts[count($parts) - 1];
     $name = explode('.', $fileName)[0];
     return 'image' . (preg_match('/\d+$/', $name, $matches) ? $matches[0] : '1');
+}
+
+// Price mappings
+$suitTypePrices = [
+    '1piece' => 1500,
+    '2pieceTD' => 1650,
+    '2pieceTB' => 1800,
+    '3piece' => 2100,
+];
+
+$lacePrices = [
+    'image1' => 200,
+    'image2' => 250,
+    'image3' => 300,
+    'image4' => 350,
+    'image5' => 400,
+    'image6' => 450,
+];
+
+$buttonPrices = [
+    'metal' => 100,
+    'fabric' => 150,
+    'plastic' => 80,
+    'wooden' => 120,
+    'pearls' => 200,
+];
+
+// Function to calculate total price
+function calculateTotalPrice($activeTab, $postData)
+{
+    global $suitTypePrices, $lacePrices, $buttonPrices;
+    $totalPrice = 0;
+
+    if ($activeTab === 'female') {
+        $suitType = $postData['female']['suitType'] ?? '';
+        if (isset($suitTypePrices[$suitType])) {
+            $totalPrice += $suitTypePrices[$suitType];
+        }
+
+        // Top Lace
+        $topLace = $postData['female']['lace'] ?? 'no';
+        $topLaceSource = $postData['female']['laceSource'] ?? '';
+        $topLaceImage = $postData['female']['laceImage'] ?? '';
+        if ($topLace === 'yes' && $topLaceSource === 'library' && $topLaceImage) {
+            $imageName = getImageName($topLaceImage);
+            if (isset($lacePrices[$imageName])) {
+                $totalPrice += $lacePrices[$imageName];
+            }
+        }
+
+        // Bottom Lace
+        $bottomLace = $postData['female']['bottomLace'] ?? 'no';
+        $bottomLaceSource = $postData['female']['bottomLaceSource'] ?? '';
+        $bottomLaceImage = $postData['female']['bottomLaceImage'] ?? '';
+        if ($bottomLace === 'yes' && $bottomLaceSource === 'library' && $bottomLaceImage) {
+            $imageName = getImageName($bottomLaceImage);
+            if (isset($lacePrices[$imageName])) {
+                $totalPrice += $lacePrices[$imageName];
+            }
+        }
+
+        // Dupatta Lace
+        $dupattaLace = $postData['female']['dupattaLace'] ?? 'no';
+        $dupattaLaceSource = $postData['female']['dupattaLaceSource'] ?? '';
+        $dupattaLaceImage = $postData['female']['dupattaLaceImage'] ?? '';
+        if ($dupattaLace === 'yes' && $dupattaLaceSource === 'library' && $dupattaLaceImage) {
+            $imageName = getImageName($dupattaLaceImage);
+            if (isset($lacePrices[$imageName])) {
+                $totalPrice += $lacePrices[$imageName];
+            }
+        }
+
+        // Buttons
+        $buttons = $postData['female']['buttons'] ?? 'no';
+        $buttonType = $postData['female']['buttonType'] ?? '';
+        if ($buttons === 'yes' && isset($buttonPrices[$buttonType])) {
+            $totalPrice += $buttonPrices[$buttonType];
+        }
+    } else if ($activeTab === 'male') {
+        $totalPrice += 1500; // Fixed stitching price
+
+        // Buttons
+        $buttons = $postData['male']['buttons'] ?? 'no';
+        $buttonType = $postData['male']['buttonType'] ?? '';
+        if ($buttons === 'yes' && isset($buttonPrices[$buttonType])) {
+            $totalPrice += $buttonPrices[$buttonType];
+        }
+    }
+
+    return $totalPrice;
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -147,8 +240,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $femaleData['dupattaLace'] = $dupattaLace;
             $femaleData['dupattaLaceDetails'] = $dupattaLaceDetails;
 
-            // Add to summary (customer email)
-            $summary .= "<li>Suit Type: {$femaleData['suitType']}</li>";
+            // Add to summary with prices (customer email)
+            $suitType = $femaleData['suitType'];
+            $suitTypePrice = $suitTypePrices[$suitType] ?? 0;
+            $summary .= "<li>Suit Type: $suitType - PKR $suitTypePrice</li>";
+            $completeData .= "<li>Suit Type: $suitType - PKR $suitTypePrice</li>";
+
             $summary .= "<li>Top Size: {$femaleData['topSize']}</li>";
             $summary .= "<li>Sleeve Length: {$femaleData['sleeveLength']}</li>";
             $summary .= "<li>Sleeve Style Image: " . getImageName($femaleData['sleeveStyleImage']) . "</li>";
@@ -159,16 +256,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $summary .= "<li>Damaan: {$femaleData['damaan']}</li>";
             $summary .= "<li>Damaan Image: " . getImageName($femaleData['damaanImage']) . "</li>";
             $summary .= "<li>Lace: {$femaleData['lace']} ($laceDetails)</li>";
+
+            if ($femaleData['lace'] === 'yes' && $femaleData['laceSource'] === 'library') {
+                $laceImageName = getImageName($femaleData['laceImage']);
+                $lacePrice = $lacePrices[$laceImageName] ?? 0;
+                $summary .= "<li>Top Lace: $laceImageName - PKR $lacePrice per gazz</li>";
+                $completeData .= "<li>Top Lace: $laceImageName - PKR $lacePrice per gazz</li>";
+            }
+
             $summary .= "<li>Buttons: {$femaleData['buttons']} ($buttonDetails)</li>";
+            if ($femaleData['buttons'] === 'yes') {
+                $buttonType = $femaleData['buttonType'];
+                $buttonPrice = $buttonPrices[$buttonType] ?? 0;
+                $summary .= "<li>Buttons: $buttonType - PKR $buttonPrice</li>";
+                $completeData .= "<li>Buttons: $buttonType - PKR $buttonPrice</li>";
+            }
+
             $summary .= "<li>Bottom Type: {$femaleData['bottomType']}</li>";
             $summary .= "<li>Bottom Size: {$femaleData['bottomSize']}</li>";
             $summary .= "<li>Custom Bottom Length: {$femaleData['customBottomLength']} inches</li>";
             $summary .= "<li>Bottom Style Image: " . getImageName($femaleData['bottomStyleImage']) . "</li>";
             $summary .= "<li>Bottom Lace: {$femaleData['bottomLace']} ($bottomLaceDetails)</li>";
+
+            if ($femaleData['bottomLace'] === 'yes' && $femaleData['bottomLaceSource'] === 'library') {
+                $bottomLaceImageName = getImageName($femaleData['bottomLaceImage']);
+                $bottomLacePrice = $lacePrices[$bottomLaceImageName] ?? 0;
+                $summary .= "<li>Bottom Lace: $bottomLaceImageName - PKR $bottomLacePrice per gazz</li>";
+                $completeData .= "<li>Bottom Lace: $bottomLaceImageName - PKR $bottomLacePrice per gazz</li>";
+            }
+
             $summary .= "<li>Dupatta Lace: {$femaleData['dupattaLace']} ($dupattaLaceDetails)</li>";
+            if ($femaleData['dupattaLace'] === 'yes' && $femaleData['dupattaLaceSource'] === 'library') {
+                $dupattaLaceImageName = getImageName($femaleData['dupattaLaceImage']);
+                $dupattaLacePrice = $lacePrices[$dupattaLaceImageName] ?? 0;
+                $summary .= "<li>Dupatta Lace: $dupattaLaceImageName - PKR $dupattaLacePrice per gazz</li>";
+                $completeData .= "<li>Dupatta Lace: $dupattaLaceImageName - PKR $dupattaLacePrice per gazz</li>";
+            }
 
             // Add to complete data (admin email)
-            $completeData .= "<li>Suit Type: {$femaleData['suitType']}</li>";
             $completeData .= "<li>Top Size: {$femaleData['topSize']}</li>";
             $completeData .= "<li>Sleeve Length: {$femaleData['sleeveLength']}</li>";
             $completeData .= "<li>Sleeve Style Image: " . getImageName($femaleData['sleeveStyleImage']) . " ({$femaleData['sleeveStyleImage']})</li>";
@@ -231,7 +356,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             $maleData['buttonDetails'] = $buttonDetails;
 
-            // Add to summary (customer email)
+            // Add to summary with prices (customer email)
             $summary .= "<li>Style: {$maleData['style']}</li>";
             $summary .= "<li>Size: {$maleData['size']}</li>";
             $summary .= "<li>Custom Top Length: {$maleData['customTopLength']} inches</li>";
@@ -239,7 +364,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $summary .= "<li>Collar Image: " . getImageName($maleData['collarImage']) . "</li>";
             $summary .= "<li>Damaan: {$maleData['damaan']}</li>";
             $summary .= "<li>Damaan Image: " . getImageName($maleData['damaanImage']) . "</li>";
+            $summary .= "<li>Stitching: PKR 1500</li>";
             $summary .= "<li>Buttons: {$maleData['buttons']} ($buttonDetails)</li>";
+            if ($maleData['buttons'] === 'yes') {
+                $buttonType = $maleData['buttonType'];
+                $buttonPrice = $buttonPrices[$buttonType] ?? 0;
+                $summary .= "<li>Buttons: $buttonType - PKR $buttonPrice</li>";
+                $completeData .= "<li>Buttons: $buttonType - PKR $buttonPrice</li>";
+            }
             $summary .= "<li>Sleeves: {$maleData['sleeves']}</li>";
             $summary .= "<li>Sleeves Image: " . getImageName($maleData['sleevesImage']) . "</li>";
             $summary .= "<li>Bottom Type: {$maleData['bottomType']}</li>";
@@ -247,7 +379,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $summary .= "<li>Custom Bottom Length: {$maleData['customBottomLength']} inches</li>";
             $summary .= "<li>Bottom Style Image: " . getImageName($maleData['bottomStyleImage']) . "</li>";
 
-            // Add to complete data (admin email)
+            // Add to complete data with prices (admin email)
             $completeData .= "<li>Style: {$maleData['style']}</li>";
             $completeData .= "<li>Size: {$maleData['size']}</li>";
             $completeData .= "<li>Custom Top Length: {$maleData['customTopLength']} inches</li>";
@@ -255,6 +387,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $completeData .= "<li>Collar Image: " . getImageName($maleData['collarImage']) . " ({$maleData['collarImage']})</li>";
             $completeData .= "<li>Damaan: {$maleData['damaan']}</li>";
             $completeData .= "<li>Damaan Image: " . getImageName($maleData['damaanImage']) . " ({$maleData['damaanImage']})</li>";
+            $completeData .= "<li>Stitching: PKR 1500</li>";
             $completeData .= "<li>Buttons: {$maleData['buttons']} ($buttonDetailsAdmin)</li>";
             $completeData .= "<li>Sleeves: {$maleData['sleeves']}</li>";
             $completeData .= "<li>Sleeves Image: " . getImageName($maleData['sleevesImage']) . " ({$maleData['sleevesImage']})</li>";
@@ -287,6 +420,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $summary .= '</ul>';
         $completeData .= '</ul>';
 
+        // Calculate total price
+        $totalPrice = calculateTotalPrice($activeTab, $_POST);
+
+        // Add total price and notes to customer email
+        $summary .= "<p><strong>Total Estimated Price: PKR $totalPrice</strong></p>";
+        if ($activeTab === 'female') {
+            $summary .= "<p>Note: Lace prices are per gazz. The total price is estimated based on standard usage.</p>";
+        }
+        $summary .= "<p>We will call you soon for confirmation and to arrange the unstitched suit pickup.</p>";
+
+        // Add total price to admin email
+        $completeData .= "<p><strong>Total Estimated Price: PKR $totalPrice</strong></p>";
+
         // 1. Send Customer Confirmation Email
         $customerEmail = $addressData['email'];
         if (!empty($customerEmail) && filter_var($customerEmail, FILTER_VALIDATE_EMAIL)) {
@@ -297,7 +443,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $mail->Body .= "<p>Dear {$addressData['fullName']},</p>";
             $mail->Body .= "<p>We have successfully received your clothing customization order. Below is a summary of your selections:</p>";
             $mail->Body .= $summary;
-            $mail->Body .= "<p>We will process your order and contact you with further details soon.</p>";
             $mail->Body .= "<p>Best regards,<br>Sew Dhaaga Team</p>";
             $mail->Body .= "</body></html>";
 
@@ -334,4 +479,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header("Location: services.php?status=error&message=Invalid request");
     exit();
 }
-?>

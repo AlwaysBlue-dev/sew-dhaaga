@@ -6,7 +6,7 @@ include 'header.php';
 
 <div class="container-fluid my-5">
     <div class="d-flex justify-content-center mt-5 mb-4">
-        <h1 style="color:#f8c2d0;; font-weight: 600; margin-top: 100px; text-align: center;">
+        <h1 style="color:#f8c2d0; font-weight: 600; margin-top: 100px; text-align: center;">
             Are You Ready To Create Your Look?
         </h1>
     </div>
@@ -41,16 +41,16 @@ include 'header.php';
                             <label for="suitType" class="form-label">Select Suit Type:<span class="required-asterisk">*</span></label>
                             <div id="suitTypeGroup" class="row btn-group" role="group" aria-label="Suit Type">
                                 <div class="col-lg-3 col-md-6 mb-2">
-                                    <button type="button" class="btn btn-outline-primary w-100" data-value="1piece">1 Piece (Top)<br>PKR 1500</button>
+                                    <button type="button" class="btn btn-outline-primary w-100" data-value="1piece" data-price="1500">1 Piece (Top)<br>PKR 1500</button>
                                 </div>
                                 <div class="col-lg-3 col-md-6 mb-2">
-                                    <button type="button" class="btn btn-outline-primary w-100" data-value="2pieceTD">2 Piece (Top and Dupatta)<br>PKR 1650</button>
+                                    <button type="button" class="btn btn-outline-primary w-100" data-value="2pieceTD" data-price="1650">2 Piece (Top and Dupatta)<br>PKR 1650</button>
                                 </div>
                                 <div class="col-lg-3 col-md-6 mb-2">
-                                    <button type="button" class="btn btn-outline-primary w-100" data-value="2pieceTB">2 Piece (Top and Bottom)<br>PKR 1800</button>
+                                    <button type="button" class="btn btn-outline-primary w-100" data-value="2pieceTB" data-price="1800">2 Piece (Top and Bottom)<br>PKR 1800</button>
                                 </div>
                                 <div class="col-lg-3 col-md-6 mb-2">
-                                    <button type="button" class="btn btn-outline-primary w-100" data-value="3piece">3 Piece (Top, Bottom, Dupatta)<br>PKR 2100</button>
+                                    <button type="button" class="btn btn-outline-primary w-100" data-value="3piece" data-price="2100">3 Piece (Top, Bottom, Dupatta)<br>PKR 2100</button>
                                 </div>
                             </div>
                             <input type="hidden" id="suitType" name="female[suitType]" value="">
@@ -185,14 +185,27 @@ include 'header.php';
                                     <label for="laceColor" class="form-label">Select Lace Color:<span class="required-asterisk">*</span></label>
                                     <input type="text" class="form-control" id="laceColor" name="female[laceColor]" placeholder="e.g., Red">
                                 </div>
+                                  <p id="selectedLacePriceTop">Selected Lace Price: PKR 0 per gazz</p>
                                 <div class="image-gallery mb-3" id="laceImages">
-                                    <img src="images/beil-styles/Beil Style 1.webp" alt="Beil Style 1">
-                                    <img src="images/beil-styles/Beil Style 2.webp" alt="Beil Style 2">
-                                    <img src="images/beil-styles/Beil Style 3.webp" alt="Beil Style 3">
-                                    <img src="images/beil-styles/Beil Style 4.webp" alt="Beil Style 4">
-                                    <img src="images/beil-styles/Beil Style 5.webp" alt="Beil Style 5">
-                                    <img src="images/beil-styles/Beil Style 6.webp" alt="Beil Style 6">
+                                     <img src="images/beil-styles/style_1.jpg" alt="Beil Style 1" data-price="170">
+                                    <img src="images/beil-styles/style_2.jpg" alt="Beil Style 2" data-price="220">
+                                    <img src="images/beil-styles/style_3.jpg" alt="Beil Style 3" data-price="170">
+                                    <img src="images/beil-styles/style_4.jpg" alt="Beil Style 4" data-price="270">
+                                    <img src="images/beil-styles/style_5.jpg" alt="Beil Style 5" data-price="170">
+                                    <img src="images/beil-styles/style_6.jpg" alt="Beil Style 6" data-price="120">
+                                    <img src="images/beil-styles/style_7.jpg" alt="Beil Style 7" data-price="120">
+                                    <img src="images/beil-styles/style_8.jpg" alt="Beil Style 8" data-price="120">
+                                    <img src="images/beil-styles/style_9.jpg" alt="Beil Style 9" data-price="170">
+                                    <img src="images/beil-styles/style_10.jpg" alt="Beil Style 10" data-price="150">
+                                    <img src="images/beil-styles/style_11.jpg" alt="Beil Style 11" data-price="120">
+                                    <img src="images/beil-styles/style_12.jpg" alt="Beil Style 12" data-price="120">
+                                    <img src="images/beil-styles/style_13.jpg" alt="Beil Style 13" data-price="150">
+                                    <img src="images/beil-styles/style_14.jpg" alt="Beil Style 14" data-price="120">
+                                    <img src="images/beil-styles/style_15.jpg" alt="Beil Style 15" data-price="120">
+                                    <img src="images/beil-styles/style_16.jpg" alt="Beil Style 16" data-price="150">
+                                    <img src="images/beil-styles/style_17.jpg" alt="Beil Style 17" data-price="120">
                                 </div>
+                              
                                 <input type="hidden" id="laceImage" name="female[laceImage]">
                             </div>
                             <div class="mb-3">
@@ -220,13 +233,14 @@ include 'header.php';
                             <div class="mb-3">
                                 <label for="buttonType" class="form-label">Select Button Type:<span class="required-asterisk">*</span></label>
                                 <div id="buttonTypeGroup" class="btn-group" role="group" aria-label="Button Type">
-                                    <button type="button" class="btn btn-outline-primary" data-value="metal">Metal</button>
-                                    <button type="button" class="btn btn-outline-primary" data-value="fabric">Fabric Covered</button>
-                                    <button type="button" class="btn btn-outline-primary" data-value="plastic">Plastic (20 colors)</button>
-                                    <button type="button" class="btn btn-outline-primary" data-value="wooden">Wooden</button>
-                                    <button type="button" class="btn btn-outline-primary" data-value="pearls">Basic Pearls</button>
+                                    <button type="button" class="btn btn-outline-primary" data-value="metal" data-price="100">Metal</button>
+                                    <button type="button" class="btn btn-outline-primary" data-value="fabric" data-price="150">Fabric Covered</button>
+                                    <button type="button" class="btn btn-outline-primary" data-value="plastic" data-price="80">Plastic (20 colors)</button>
+                                    <button type="button" class="btn btn-outline-primary" data-value="wooden" data-price="120">Wooden</button>
+                                    <button type="button" class="btn btn-outline-primary" data-value="pearls" data-price="200">Basic Pearls</button>
                                 </div>
                                 <input type="hidden" id="buttonType" name="female[buttonType]" value="">
+                                <p id="selectedButtonPrice">Selected Button Type Price: PKR 0</p>
                             </div>
                             <div class="image-gallery mb-3" id="buttonImages"></div>
                             <input type="hidden" id="buttonImage" name="female[buttonImage]">
@@ -334,19 +348,31 @@ include 'header.php';
                                     <label for="bottomLaceColor" class="form-label">Select Lace Color:<span class="required-asterisk">*</span></label>
                                     <input type="text" class="form-control" id="bottomLaceColor" name="female[bottomLaceColor]" placeholder="e.g., Red">
                                 </div>
+                                  <p id="selectedLacePriceBottom">Selected Lace Price: PKR 0 per gazz</p>
                                 <div class="image-gallery mb-3" id="bottomLaceImages">
-                                    <img src="images/beil-styles/Beil Style 1.webp" alt="Beil Style 1">
-                                    <img src="images/beil-styles/Beil Style 2.webp" alt="Beil Style 2">
-                                    <img src="images/beil-styles/Beil Style 3.webp" alt="Beil Style 3">
-                                    <img src="images/beil-styles/Beil Style 4.webp" alt="Beil Style 4">
-                                    <img src="images/beil-styles/Beil Style 5.webp" alt="Beil Style 5">
-                                    <img src="images/beil-styles/Beil Style 6.webp" alt="Beil Style 6">
+                                    <img src="images/beil-styles/style_1.jpg" alt="Beil Style 1" data-price="170">
+                                    <img src="images/beil-styles/style_2.jpg" alt="Beil Style 2" data-price="220">
+                                    <img src="images/beil-styles/style_3.jpg" alt="Beil Style 3" data-price="170">
+                                    <img src="images/beil-styles/style_4.jpg" alt="Beil Style 4" data-price="270">
+                                    <img src="images/beil-styles/style_5.jpg" alt="Beil Style 5" data-price="170">
+                                    <img src="images/beil-styles/style_6.jpg" alt="Beil Style 6" data-price="120">
+                                    <img src="images/beil-styles/style_7.jpg" alt="Beil Style 7" data-price="120">
+                                    <img src="images/beil-styles/style_8.jpg" alt="Beil Style 8" data-price="120">
+                                    <img src="images/beil-styles/style_9.jpg" alt="Beil Style 9" data-price="170">
+                                    <img src="images/beil-styles/style_10.jpg" alt="Beil Style 10" data-price="150">
+                                    <img src="images/beil-styles/style_11.jpg" alt="Beil Style 11" data-price="120">
+                                    <img src="images/beil-styles/style_12.jpg" alt="Beil Style 12" data-price="120">
+                                    <img src="images/beil-styles/style_13.jpg" alt="Beil Style 13" data-price="150">
+                                    <img src="images/beil-styles/style_14.jpg" alt="Beil Style 14" data-price="120">
+                                    <img src="images/beil-styles/style_15.jpg" alt="Beil Style 15" data-price="120">
+                                    <img src="images/beil-styles/style_16.jpg" alt="Beil Style 16" data-price="150">
+                                    <img src="images/beil-styles/style_17.jpg" alt="Beil Style 17" data-price="120">
                                 </div>
+                              
                                 <input type="hidden" id="bottomLaceImage" name="female[bottomLaceImage]">
                             </div>
                         </div>
                     </div>
-
                     <div id="dupattaSection" class="section card">
                         <h4>Dupatta Section</h4>
                         <div class="mb-3">
@@ -372,14 +398,28 @@ include 'header.php';
                                     <label for="dupattaLaceColor" class="form-label">Select Lace Color:<span class="required-asterisk">*</span></label>
                                     <input type="text" class="form-control" id="dupattaLaceColor" name="female[dupattaLaceColor]" placeholder="e.g., Red">
                                 </div>
+                                <p id="selectedLacePriceDupatta">Selected Lace Price: PKR 0 per gazz</p>
                                 <div class="image-gallery mb-3" id="dupattaLaceImages">
-                                    <img src="images/beil-styles/Beil Style 1.webp" alt="Beil Style 1">
-                                    <img src="images/beil-styles/Beil Style 2.webp" alt="Beil Style 2">
-                                    <img src="images/beil-styles/Beil Style 3.webp" alt="Beil Style 3">
-                                    <img src="images/beil-styles/Beil Style 4.webp" alt="Beil Style 4">
-                                    <img src="images/beil-styles/Beil Style 5.webp" alt="Beil Style 5">
-                                    <img src="images/beil-styles/Beil Style 6.webp" alt="Beil Style 6">
+                                    <img src="images/beil-styles/style_1.jpg" alt="Beil Style 1" data-price="170">
+                                    <img src="images/beil-styles/style_2.jpg" alt="Beil Style 2" data-price="220">
+                                    <img src="images/beil-styles/style_3.jpg" alt="Beil Style 3" data-price="170">
+                                    <img src="images/beil-styles/style_4.jpg" alt="Beil Style 4" data-price="270">
+                                    <img src="images/beil-styles/style_5.jpg" alt="Beil Style 5" data-price="170">
+                                    <img src="images/beil-styles/style_6.jpg" alt="Beil Style 6" data-price="120">
+                                    <img src="images/beil-styles/style_7.jpg" alt="Beil Style 7" data-price="120">
+                                    <img src="images/beil-styles/style_8.jpg" alt="Beil Style 8" data-price="120">
+                                    <img src="images/beil-styles/style_9.jpg" alt="Beil Style 9" data-price="170">
+                                    <img src="images/beil-styles/style_10.jpg" alt="Beil Style 10" data-price="150">
+                                    <img src="images/beil-styles/style_11.jpg" alt="Beil Style 11" data-price="120">
+                                    <img src="images/beil-styles/style_12.jpg" alt="Beil Style 12" data-price="120">
+                                    <img src="images/beil-styles/style_13.jpg" alt="Beil Style 13" data-price="150">
+                                    <img src="images/beil-styles/style_14.jpg" alt="Beil Style 14" data-price="120">
+                                    <img src="images/beil-styles/style_15.jpg" alt="Beil Style 15" data-price="120">
+                                    <img src="images/beil-styles/style_16.jpg" alt="Beil Style 16" data-price="150">
+                                    <img src="images/beil-styles/style_17.jpg" alt="Beil Style 17" data-price="120">
+                                   
                                 </div>
+                                
                                 <input type="hidden" id="dupattaLaceImage" name="female[dupattaLaceImage]">
                             </div>
                             <div class="mb-3">
@@ -503,13 +543,14 @@ include 'header.php';
                             <div class="mb-3">
                                 <label for="maleButtonType" class="form-label">Select Button Type:<span class="required-asterisk">*</span></label>
                                 <div id="maleButtonTypeGroup" class="btn-group" role="group" aria-label="Male Button Type">
-                                    <button type="button" class="btn btn-outline-primary" data-value="metal">Metal</button>
-                                    <button type="button" class="btn btn-outline-primary" data-value="fabric">Fabric Covered</button>
-                                    <button type="button" class="btn btn-outline-primary" data-value="plastic">Plastic (20 colors)</button>
-                                    <button type="button" class="btn btn-outline-primary" data-value="wooden">Wooden</button>
-                                    <button type="button" class="btn btn-outline-primary" data-value="pearls">Basic Pearls</button>
+                                    <button type="button" class="btn btn-outline-primary" data-value="metal" data-price="100">Metal</button>
+                                    <button type="button" class="btn btn-outline-primary" data-value="fabric" data-price="150">Fabric Covered</button>
+                                    <button type="button" class="btn btn-outline-primary" data-value="plastic" data-price="80">Plastic (20 colors)</button>
+                                    <button type="button" class="btn btn-outline-primary" data-value="wooden" data-price="120">Wooden</button>
+                                    <button type="button" class="btn btn-outline-primary" data-value="pearls" data-price="200">Basic Pearls</button>
                                 </div>
                                 <input type="hidden" id="maleButtonType" name="male[buttonType]" value="">
+                                <p id="selectedMaleButtonPrice">Selected Button Type Price: PKR 0</p>
                             </div>
                             <div class="image-gallery mb-3" id="maleButtonImages"></div>
                             <input type="hidden" id="maleButtonImage" name="male[buttonImage]">

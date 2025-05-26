@@ -307,38 +307,61 @@ function handleLace(
   const laceImageInput = document.getElementById(laceImageInputId);
   const laceSourceSelect = document.getElementById(laceSource);
   const laceColorInput = document.getElementById(`${section}LaceColor`);
+  const priceDisplayId = `selectedLacePrice${
+    section.charAt(0).toUpperCase() + section.slice(1)
+  }`;
+
   document.getElementById(laceRadioYes).addEventListener("change", function () {
     toggleSection(laceOptions, true, [laceSource]);
     updateSummary();
     updateProgress();
   });
+
   document.getElementById(laceRadioNo).addEventListener("change", function () {
     toggleSection(laceOptions, false, [laceSource]);
     toggleSection(laceLibraryOptions, false, [laceColorInput?.id]);
     laceImageInput.value = "";
+    document.getElementById(priceDisplayId).textContent =
+      "Selected Lace Price: PKR 0 per gazz";
     updateSummary();
     updateProgress();
   });
+
   laceSourceSelect.addEventListener("change", function () {
     const isLibrary = this.value === "library";
     toggleSection(laceLibraryOptions, isLibrary, [laceColorInput?.id]);
-    if (!isLibrary) laceImageInput.value = "";
+    if (!isLibrary) {
+      laceImageInput.value = "";
+      document.getElementById(priceDisplayId).textContent =
+        "Selected Lace Price: PKR 0 per gazz";
+    }
     if (isLibrary) {
       const laceImages = document.querySelectorAll(
         `#${laceLibraryOptions} .image-gallery img`
       );
-      laceImages.forEach((img, index) => {
+      laceImages.forEach((img) => {
         img.addEventListener("click", function () {
           laceImages.forEach((i) => i.classList.remove("selected"));
           this.classList.add("selected");
           laceImageInput.value = this.src;
           laceImageInput.dispatchEvent(new Event("change"));
+          const price = this.getAttribute("data-price") || 0;
+          document.getElementById(
+            priceDisplayId
+          ).textContent = `Selected Lace Price: PKR ${price} per gazz`;
         });
       });
       selectFirstImage(
         laceLibraryOptions.replace("Options", "Images"),
         laceImageInputId
       );
+      const firstImage = laceImages[0];
+      if (firstImage) {
+        const price = firstImage.getAttribute("data-price") || 0;
+        document.getElementById(
+          priceDisplayId
+        ).textContent = `Selected Lace Price: PKR ${price} per gazz`;
+      }
     }
     updateSummary();
     updateProgress();
@@ -379,7 +402,8 @@ function handleButtons(
   buttonOptions,
   buttonTypeId,
   buttonStyleId,
-  buttonImageId
+  buttonImageId,
+  priceDisplayId
 ) {
   document.getElementById(buttonsYes).addEventListener("change", function () {
     toggleSection(buttonOptions, true, [buttonTypeId, buttonStyleId]);
@@ -389,6 +413,8 @@ function handleButtons(
   document.getElementById(buttonsNo).addEventListener("change", function () {
     toggleSection(buttonOptions, false, [buttonTypeId, buttonStyleId]);
     document.getElementById(buttonImageId).value = "";
+    document.getElementById(priceDisplayId).textContent =
+      "Selected Button Type Price: PKR 0";
     updateSummary();
     updateProgress();
   });
@@ -400,7 +426,8 @@ handleButtons(
   "buttonOptions",
   "buttonType",
   "buttonStyle",
-  "buttonImage"
+  "buttonImage",
+  "selectedButtonPrice"
 );
 handleButtons(
   "maleButtonsYes",
@@ -408,7 +435,8 @@ handleButtons(
   "maleButtonOptions",
   "maleButtonType",
   "maleButtonStyle",
-  "maleButtonImage"
+  "maleButtonImage",
+  "selectedMaleButtonPrice"
 );
 
 document.getElementById("buttonType").addEventListener("change", function () {
@@ -434,6 +462,16 @@ document.getElementById("buttonType").addEventListener("change", function () {
   }
   updateSummary();
   updateProgress();
+});
+
+document.querySelectorAll("#buttonTypeGroup .btn").forEach((button) => {
+  button.addEventListener("click", function () {
+    const price = this.getAttribute("data-price") || 0;
+    document.getElementById(
+      "selectedButtonPrice"
+    ).textContent = `Selected Button Type Price: PKR ${price}`;
+    updateSummary();
+  });
 });
 
 document.getElementById("buttonStyle").addEventListener("change", function () {
@@ -588,6 +626,16 @@ document
     updateSummary();
     updateProgress();
   });
+
+document.querySelectorAll("#maleButtonTypeGroup .btn").forEach((button) => {
+  button.addEventListener("click", function () {
+    const price = this.getAttribute("data-price") || 0;
+    document.getElementById(
+      "selectedMaleButtonPrice"
+    ).textContent = `Selected Button Type Price: PKR ${price}`;
+    updateSummary();
+  });
+});
 
 document
   .getElementById("maleButtonStyle")
@@ -752,6 +800,105 @@ document.querySelectorAll(".nav-link").forEach((tab) => {
   });
 });
 
+function calculateTotalPrice() {
+  let totalPrice = 0;
+  const activeTab = document.querySelector(".tab-pane.active").id;
+
+  if (activeTab === "female") {
+    const suitTypeButton = document.querySelector("#suitTypeGroup .btn.active");
+    if (suitTypeButton) {
+      totalPrice += parseInt(suitTypeButton.getAttribute("data-price")) || 0;
+    }
+
+    const topLace = document.querySelector(
+      'input[name="female[lace]"]:checked'
+    )?.value;
+    if (topLace === "yes") {
+      const laceSource = document.getElementById("laceSource").value;
+      if (laceSource === "library") {
+        const selectedLaceImage = document.querySelector(
+          "#laceImages img.selected"
+        );
+        if (selectedLaceImage) {
+          totalPrice +=
+            parseInt(selectedLaceImage.getAttribute("data-price")) || 0;
+        }
+      }
+    }
+
+    const buttons = document.querySelector(
+      'input[name="female[buttons]"]:checked'
+    )?.value;
+    if (buttons === "yes") {
+      const buttonTypeButton = document.querySelector(
+        "#buttonTypeGroup .btn.active"
+      );
+      if (buttonTypeButton) {
+        totalPrice +=
+          parseInt(buttonTypeButton.getAttribute("data-price")) || 0;
+      }
+    }
+
+    const bottomSection = document.getElementById("bottomSection");
+    if (bottomSection.classList.contains("active")) {
+      const bottomLace = document.querySelector(
+        'input[name="female[bottomLace]"]:checked'
+      )?.value;
+      if (bottomLace === "yes") {
+        const bottomLaceSource =
+          document.getElementById("bottomLaceSource").value;
+        if (bottomLaceSource === "library") {
+          const selectedBottomLaceImage = document.querySelector(
+            "#bottomLaceImages img.selected"
+          );
+          if (selectedBottomLaceImage) {
+            totalPrice +=
+              parseInt(selectedBottomLaceImage.getAttribute("data-price")) || 0;
+          }
+        }
+      }
+    }
+
+    const dupattaSection = document.getElementById("dupattaSection");
+    if (dupattaSection.classList.contains("active")) {
+      const dupattaLace = document.querySelector(
+        'input[name="female[dupattaLace]"]:checked'
+      )?.value;
+      if (dupattaLace === "yes") {
+        const dupattaLaceSource =
+          document.getElementById("dupattaLaceSource").value;
+        if (dupattaLaceSource === "library") {
+          const selectedDupattaLaceImage = document.querySelector(
+            "#dupattaLaceImages img.selected"
+          );
+          if (selectedDupattaLaceImage) {
+            totalPrice +=
+              parseInt(selectedDupattaLaceImage.getAttribute("data-price")) ||
+              0;
+          }
+        }
+      }
+    }
+  } else if (activeTab === "male") {
+    totalPrice += 1500; // Fixed stitching price
+
+    const buttons = document.querySelector(
+      'input[name="male[buttons]"]:checked'
+    )?.value;
+    if (buttons === "yes") {
+      const buttonTypeButton = document.querySelector(
+        "#maleButtonTypeGroup .btn.active"
+      );
+      if (buttonTypeButton) {
+        totalPrice +=
+          parseInt(buttonTypeButton.getAttribute("data-price")) || 0;
+      }
+    }
+  }
+
+  return totalPrice;
+}
+
 function updateSummary() {
   const summaryList = document.getElementById("summaryList");
   summaryList.innerHTML = "";
@@ -767,13 +914,15 @@ function updateSummary() {
       document.getElementById("customTopLength").value || "Not selected";
     const sleeveLength =
       document.getElementById("sleeveLength").value || "Not selected";
-    const sleeveStyleImage =
-      getImageName(document.getElementById("sleeveStyleImage").value);
+    const sleeveStyleImage = getImageName(
+      document.getElementById("sleeveStyleImage").value
+    );
     const customSleeveLength =
       document.getElementById("customSleeveLength").value || "Not selected";
     const damaan = document.getElementById("damaan").value || "Not selected";
-    const damaanImage =
-      getImageName(document.getElementById("damaanImage").value);
+    const damaanImage = getImageName(
+      document.getElementById("damaanImage").value
+    );
     const lace =
       document.querySelector('input[name="female[lace]"]:checked')?.value ||
       "Not selected";
@@ -783,7 +932,9 @@ function updateSummary() {
         document.getElementById("laceSource").value || "Not selected";
       const laceColor =
         document.getElementById("laceColor").value || "Not selected";
-      const laceImage = getImageName(document.getElementById("laceImage").value);
+      const laceImage = getImageName(
+        document.getElementById("laceImage").value
+      );
       const lacePositions =
         Array.from(
           document.querySelectorAll(
@@ -798,13 +949,25 @@ function updateSummary() {
       document.querySelector('input[name="female[buttons]"]:checked')?.value ||
       "Not selected";
     let buttonDetails = "None";
+    let buttonPrice = 0;
+    let buttonType = "Not selected";
     if (buttons === "yes") {
-      const buttonType =
+      buttonType =
         document.getElementById("buttonType").value || "Not selected";
       const buttonStyle =
         document.getElementById("buttonStyle").value || "Not selected";
-      const buttonImage = getImageName(document.getElementById("buttonImage").value);
-      const buttonStyleImage = getImageName(document.getElementById("buttonStyleImage").value);
+      const buttonImage = getImageName(
+        document.getElementById("buttonImage").value
+      );
+      const buttonStyleImage = getImageName(
+        document.getElementById("buttonStyleImage").value
+      );
+      const buttonTypeButton = document.querySelector(
+        "#buttonTypeGroup .btn.active"
+      );
+      buttonPrice = buttonTypeButton
+        ? parseInt(buttonTypeButton.getAttribute("data-price")) || 0
+        : 0;
       buttonDetails = `Type: ${buttonType}, Style: ${buttonStyle}, Image: ${buttonImage}, Style Image: ${buttonStyleImage}`;
     }
     const bottomType =
@@ -813,8 +976,9 @@ function updateSummary() {
       document.getElementById("bottomSize").value || "Not selected";
     const customBottomLength =
       document.getElementById("customBottomLength").value || "Not selected";
-    const bottomStyleImage =
-      getImageName(document.getElementById("bottomStyleImage").value);
+    const bottomStyleImage = getImageName(
+      document.getElementById("bottomStyleImage").value
+    );
     const bottomLace =
       document.querySelector('input[name="female[bottomLace]"]:checked')
         ?.value || "Not selected";
@@ -824,7 +988,9 @@ function updateSummary() {
         document.getElementById("bottomLaceSource").value || "Not selected";
       const bottomLaceColor =
         document.getElementById("bottomLaceColor").value || "Not selected";
-      const bottomLaceImage = getImageName(document.getElementById("bottomLaceImage").value);
+      const bottomLaceImage = getImageName(
+        document.getElementById("bottomLaceImage").value
+      );
       bottomLaceDetails = `Source: ${bottomLaceSource}, Color: ${bottomLaceColor}, Image: ${bottomLaceImage}`;
     }
     const dupattaLace =
@@ -836,7 +1002,9 @@ function updateSummary() {
         document.getElementById("dupattaLaceSource").value || "Not selected";
       const dupattaLaceColor =
         document.getElementById("dupattaLaceColor").value || "Not selected";
-      const dupattaLaceImage = getImageName(document.getElementById("dupattaLaceImage").value);
+      const dupattaLaceImage = getImageName(
+        document.getElementById("dupattaLaceImage").value
+      );
       const dupattaLacePosition =
         document.querySelector(
           'input[name="female[dupattaLacePosition]"]:checked'
@@ -852,8 +1020,12 @@ function updateSummary() {
     const postalCode =
       document.getElementById("postalCode").value || "Not provided";
     const phone = document.getElementById("phone").value || "Not provided";
+    const suitTypeButton = document.querySelector("#suitTypeGroup .btn.active");
+    const suitTypePrice = suitTypeButton
+      ? suitTypeButton.getAttribute("data-price")
+      : 0;
     const summaryItems = [
-      `Suit Type: ${suitType}`,
+      `Suit Type: ${suitType} - PKR ${suitTypePrice}`,
       `Top Size: ${topSize}`,
       `Style: ${style}`,
       `Neck Style: ${neckStyle}`,
@@ -864,25 +1036,94 @@ function updateSummary() {
       `Damaan: ${damaan}`,
       `Damaan Image: ${damaanImage}`,
       `Lace: ${lace} (${laceDetails})`,
-      `Buttons: ${buttons} (${buttonDetails})`,
+    ];
+
+    if (lace === "yes" && laceSource === "library") {
+      const selectedLaceImage = document.querySelector(
+        "#laceImages img.selected"
+      );
+      if (selectedLaceImage) {
+        const lacePrice = selectedLaceImage.getAttribute("data-price");
+        summaryItems.push(`Top Lace: ${laceImage} - PKR ${lacePrice} per gazz`);
+      }
+    }
+
+    if (buttons === "yes") {
+      summaryItems.push(
+        `Buttons: ${buttonType} - PKR ${buttonPrice} (${buttonDetails})`
+      );
+    } else {
+      summaryItems.push(`Buttons: None`);
+    }
+
+    summaryItems.push(
       `Bottom Type: ${bottomType}`,
       `Bottom Size: ${bottomSize}`,
       `Custom Bottom Length: ${customBottomLength} inches`,
       `Bottom Style Image: ${bottomStyleImage}`,
-      `Bottom Lace: ${bottomLace} (${bottomLaceDetails})`,
-      `Dupatta Lace: ${dupattaLace} (${dupattaLaceDetails})`,
+      `Bottom Lace: ${bottomLace} (${bottomLaceDetails})`
+    );
+
+    if (bottomLace === "yes" && bottomLaceSource === "library") {
+      const selectedBottomLaceImage = document.querySelector(
+        "#bottomLaceImages img.selected"
+      );
+      if (selectedBottomLaceImage) {
+        const bottomLacePrice =
+          selectedBottomLaceImage.getAttribute("data-price");
+        summaryItems.push(
+          `Bottom Lace: ${bottomLaceImage} - PKR ${bottomLacePrice} per gazz`
+        );
+      }
+    }
+
+    summaryItems.push(`Dupatta Lace: ${dupattaLace} (${dupattaLaceDetails})`);
+    if (dupattaLace === "yes" && dupattaLaceSource === "library") {
+      const selectedDupattaLaceImage = document.querySelector(
+        "#dupattaLaceImages img.selected"
+      );
+      if (selectedDupattaLaceImage) {
+        const dupattaLacePrice =
+          selectedDupattaLaceImage.getAttribute("data-price");
+        summaryItems.push(
+          `Dupatta Lace: ${dupattaLaceImage} - PKR ${dupattaLacePrice} per gazz`
+        );
+      }
+    }
+
+    summaryItems.push(
       `Full Name: ${fullName}`,
       `Email: ${email}`,
       `Street Address: ${streetAddress}`,
       `City: ${city}`,
       `Postal Code: ${postalCode}`,
-      `Phone: ${phone}`,
-    ];
+      `Phone: ${phone}`
+    );
+
     summaryItems.forEach((item) => {
       const li = document.createElement("li");
       li.textContent = item;
       summaryList.appendChild(li);
     });
+
+    const laceSections = [
+      { radioName: "lace", sourceId: "laceSource" },
+      { radioName: "bottomLace", sourceId: "bottomLaceSource" },
+      { radioName: "dupattaLace", sourceId: "dupattaLaceSource" },
+    ];
+    const laceSelected = laceSections.some(({ radioName, sourceId }) => {
+      const lace = document.querySelector(
+        `input[name="female[${radioName}]"]:checked`
+      )?.value;
+      const source = document.getElementById(sourceId).value;
+      return lace === "yes" && source === "library";
+    });
+    if (laceSelected) {
+      const disclaimerLi = document.createElement("li");
+      disclaimerLi.textContent =
+        "Note: Lace prices are per gazz. The total price is estimated based on standard usage.";
+      summaryList.appendChild(disclaimerLi);
+    }
   } else if (activeTab === "male") {
     const style = document.getElementById("maleStyle").value || "Not selected";
     const size = document.getElementById("maleSize").value || "Not selected";
@@ -890,12 +1131,14 @@ function updateSummary() {
       document.getElementById("maleCustomTopLength").value || "Not selected";
     const collarStyle =
       document.getElementById("maleCollarStyle").value || "Not selected";
-    const collarImage =
-      getImageName(document.getElementById("maleCollarImage").value);
+    const collarImage = getImageName(
+      document.getElementById("maleCollarImage").value
+    );
     const damaan =
       document.getElementById("maleDamaan").value || "Not selected";
-    const damaanImage =
-      getImageName(document.getElementById("maleDamaanImage").value);
+    const damaanImage = getImageName(
+      document.getElementById("maleDamaanImage").value
+    );
     const buttons =
       document.querySelector('input[name="male[buttons]"]:checked')?.value ||
       "Not selected";
@@ -905,22 +1148,28 @@ function updateSummary() {
         document.getElementById("maleButtonType").value || "Not selected";
       const buttonStyle =
         document.getElementById("maleButtonStyle").value || "Not selected";
-      const buttonImage = getImageName(document.getElementById("maleButtonImage").value);
-      const buttonStyleImage = getImageName(document.getElementById("maleButtonStyleImage").value);
+      const buttonImage = getImageName(
+        document.getElementById("maleButtonImage").value
+      );
+      const buttonStyleImage = getImageName(
+        document.getElementById("maleButtonStyleImage").value
+      );
       buttonDetails = `Type: ${buttonType}, Style: ${buttonStyle}, Image: ${buttonImage}, Style Image: ${buttonStyleImage}`;
     }
     const sleeves =
       document.getElementById("maleSleeves").value || "Not selected";
-    const sleevesImage =
-      getImageName(document.getElementById("maleSleevesImage").value);
+    const sleevesImage = getImageName(
+      document.getElementById("maleSleevesImage").value
+    );
     const bottomType =
       document.getElementById("maleBottomType").value || "Not selected";
     const bottomSize =
       document.getElementById("maleBottomSize").value || "Not selected";
     const customBottomLength =
       document.getElementById("maleCustomBottomLength").value || "Not selected";
-    const bottomStyleImage =
-      getImageName(document.getElementById("maleBottomStyleImage").value);
+    const bottomStyleImage = getImageName(
+      document.getElementById("maleBottomStyleImage").value
+    );
     const fullName =
       document.getElementById("fullName").value || "Not provided";
     const email = document.getElementById("email").value || "Not provided";
@@ -938,26 +1187,37 @@ function updateSummary() {
       `Collar Image: ${collarImage}`,
       `Damaan: ${damaan}`,
       `Damaan Image: ${damaanImage}`,
-      `Buttons: ${buttons} (${buttonDetails})`,
       `Sleeves: ${sleeves}`,
       `Sleeves Image: ${sleevesImage}`,
       `Bottom Type: ${bottomType}`,
       `Bottom Size: ${bottomSize}`,
       `Custom Bottom Length: ${customBottomLength} inches`,
       `Bottom Style Image: ${bottomStyleImage}`,
-      `Full Name: ${fullName}`,
-      `Email: ${email}`,
-      `Street Address: ${streetAddress}`,
-      `City: ${city}`,
-      `Postal Code: ${postalCode}`,
-      `Phone: ${phone}`,
+      `Stitching: PKR 1500`,
+      `Buttons: ${buttons} (${buttonDetails})`,
     ];
+
+    if (buttons === "yes") {
+      const buttonTypeButton = document.querySelector(
+        "#maleButtonTypeGroup .btn.active"
+      );
+      if (buttonTypeButton) {
+        const buttonPrice = buttonTypeButton.getAttribute("data-price");
+        summaryItems.push(`Buttons: ${buttonType} - PKR ${buttonPrice}`);
+      }
+    }
+
     summaryItems.forEach((item) => {
       const li = document.createElement("li");
       li.textContent = item;
       summaryList.appendChild(li);
     });
   }
+  const totalPrice = calculateTotalPrice();
+  const totalLi = document.createElement("li");
+  totalLi.innerHTML = `<strong>Total Price: PKR ${totalPrice} <br>(Estimated. Final amount will be confirmed via call.)</strong>`;
+
+  summaryList.appendChild(totalLi);
 }
 
 document.querySelectorAll("input, select, textarea").forEach((element) => {
