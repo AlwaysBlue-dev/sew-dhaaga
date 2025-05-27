@@ -1120,9 +1120,10 @@ function updateSummary() {
     });
     if (laceSelected) {
       const disclaimerLi = document.createElement("li");
-      disclaimerLi.textContent =
-        "Note: Lace prices are per gazz. The total price is estimated based on standard usage.";
+      disclaimerLi.textContent = "Note: Lace prices are per gazz. The total price is estimated based on standard usage.";
+      disclaimerLi.style.fontWeight = "bold";
       summaryList.appendChild(disclaimerLi);
+
     }
   } else if (activeTab === "male") {
     const style = document.getElementById("maleStyle").value || "Not selected";
