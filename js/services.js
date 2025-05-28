@@ -19,7 +19,6 @@ handleButtonGroupClick("neckStyleGroup", "neckStyle");
 handleButtonGroupClick("sleeveLengthGroup", "sleeveLength");
 handleButtonGroupClick("damaanGroup", "damaan");
 handleButtonGroupClick("laceSourceGroup", "laceSource");
-handleButtonGroupClick("buttonTypeGroup", "buttonType");
 handleButtonGroupClick("buttonStyleGroup", "buttonStyle");
 handleButtonGroupClick("bottomTypeGroup", "bottomType");
 handleButtonGroupClick("bottomSizeGroup", "bottomSize");
@@ -109,6 +108,19 @@ function populateSleeveStyleImages() {
     sleeveStyleImages.appendChild(img);
   });
   selectFirstImage("sleeveStyleImages", "sleeveStyleImage");
+}
+
+function setupButtonImages() {
+  const buttonImages = document.querySelectorAll("#buttonImages img");
+  const buttonImageInput = document.getElementById("buttonImage");
+  buttonImages.forEach((img) => {
+    img.addEventListener("click", function () {
+      buttonImages.forEach((i) => i.classList.remove("selected"));
+      this.classList.add("selected");
+      buttonImageInput.value = this.src;
+      buttonImageInput.dispatchEvent(new Event("change"));
+    });
+  });
 }
 
 document.getElementById("suitType").addEventListener("change", function () {
@@ -400,21 +412,18 @@ function handleButtons(
   buttonsYes,
   buttonsNo,
   buttonOptions,
-  buttonTypeId,
   buttonStyleId,
-  buttonImageId,
-  priceDisplayId
+  buttonImageId
 ) {
   document.getElementById(buttonsYes).addEventListener("change", function () {
-    toggleSection(buttonOptions, true, [buttonTypeId, buttonStyleId]);
+    toggleSection(buttonOptions, true, [buttonStyleId]);
+    selectFirstImage("buttonImages", buttonImageId);
     updateSummary();
     updateProgress();
   });
   document.getElementById(buttonsNo).addEventListener("change", function () {
-    toggleSection(buttonOptions, false, [buttonTypeId, buttonStyleId]);
+    toggleSection(buttonOptions, false, [buttonStyleId]);
     document.getElementById(buttonImageId).value = "";
-    document.getElementById(priceDisplayId).textContent =
-      "Selected Button Type Price: PKR 0";
     updateSummary();
     updateProgress();
   });
@@ -424,55 +433,16 @@ handleButtons(
   "buttonsYes",
   "buttonsNo",
   "buttonOptions",
-  "buttonType",
   "buttonStyle",
-  "buttonImage",
-  "selectedButtonPrice"
+  "buttonImage"
 );
 handleButtons(
   "maleButtonsYes",
   "maleButtonsNo",
   "maleButtonOptions",
-  "maleButtonType",
   "maleButtonStyle",
-  "maleButtonImage",
-  "selectedMaleButtonPrice"
+  "maleButtonImage"
 );
-
-document.getElementById("buttonType").addEventListener("change", function () {
-  const buttonType = this.value;
-  const buttonImages = document.getElementById("buttonImages");
-  const buttonImageInput = document.getElementById("buttonImage");
-  buttonImages.innerHTML = "";
-  buttonImageInput.value = "";
-  if (buttonType) {
-    const img = document.createElement("img");
-    img.src = `images/${buttonType} Button.jpg`;
-    img.alt = `${buttonType} Button`;
-    img.addEventListener("click", function () {
-      buttonImages
-        .querySelectorAll("img")
-        .forEach((i) => i.classList.remove("selected"));
-      this.classList.add("selected");
-      buttonImageInput.value = this.src;
-      buttonImageInput.dispatchEvent(new Event("change"));
-    });
-    buttonImages.appendChild(img);
-    selectFirstImage("buttonImages", "buttonImage");
-  }
-  updateSummary();
-  updateProgress();
-});
-
-document.querySelectorAll("#buttonTypeGroup .btn").forEach((button) => {
-  button.addEventListener("click", function () {
-    const price = this.getAttribute("data-price") || 0;
-    document.getElementById(
-      "selectedButtonPrice"
-    ).textContent = `Selected Button Type Price: PKR ${price}`;
-    updateSummary();
-  });
-});
 
 document.getElementById("buttonStyle").addEventListener("change", function () {
   const buttonStyle = this.value;
@@ -830,13 +800,7 @@ function calculateTotalPrice() {
       'input[name="female[buttons]"]:checked'
     )?.value;
     if (buttons === "yes") {
-      const buttonTypeButton = document.querySelector(
-        "#buttonTypeGroup .btn.active"
-      );
-      if (buttonTypeButton) {
-        totalPrice +=
-          parseInt(buttonTypeButton.getAttribute("data-price")) || 0;
-      }
+      totalPrice += 25; // Fixed price for fabric covered buttons
     }
 
     const bottomSection = document.getElementById("bottomSection");
@@ -950,10 +914,7 @@ function updateSummary() {
       "Not selected";
     let buttonDetails = "None";
     let buttonPrice = 0;
-    let buttonType = "Not selected";
     if (buttons === "yes") {
-      buttonType =
-        document.getElementById("buttonType").value || "Not selected";
       const buttonStyle =
         document.getElementById("buttonStyle").value || "Not selected";
       const buttonImage = getImageName(
@@ -962,13 +923,8 @@ function updateSummary() {
       const buttonStyleImage = getImageName(
         document.getElementById("buttonStyleImage").value
       );
-      const buttonTypeButton = document.querySelector(
-        "#buttonTypeGroup .btn.active"
-      );
-      buttonPrice = buttonTypeButton
-        ? parseInt(buttonTypeButton.getAttribute("data-price")) || 0
-        : 0;
-      buttonDetails = `Type: ${buttonType}, Style: ${buttonStyle}, Image: ${buttonImage}, Style Image: ${buttonStyleImage}`;
+      buttonPrice = 25; // Fixed price for fabric covered buttons
+      buttonDetails = `Style: ${buttonStyle}, Image: ${buttonImage}, Style Image: ${buttonStyleImage}`;
     }
     const bottomType =
       document.getElementById("bottomType").value || "Not selected";
@@ -1050,7 +1006,7 @@ function updateSummary() {
 
     if (buttons === "yes") {
       summaryItems.push(
-        `Buttons: ${buttonType} - PKR ${buttonPrice} (${buttonDetails})`
+        `Fabric Covered Buttons: PKR ${buttonPrice} (${buttonDetails})`
       );
     } else {
       summaryItems.push(`Buttons: None`);
@@ -1120,10 +1076,10 @@ function updateSummary() {
     });
     if (laceSelected) {
       const disclaimerLi = document.createElement("li");
-      disclaimerLi.textContent = "Note: Lace prices are per gazz. The total price is estimated based on standard usage.";
+      disclaimerLi.textContent =
+        "Note: Lace prices are per gazz. The total price is estimated based on standard usage.";
       disclaimerLi.style.fontWeight = "bold";
       summaryList.appendChild(disclaimerLi);
-
     }
   } else if (activeTab === "male") {
     const style = document.getElementById("maleStyle").value || "Not selected";
@@ -1217,7 +1173,6 @@ function updateSummary() {
   const totalPrice = calculateTotalPrice();
   const totalLi = document.createElement("li");
   totalLi.innerHTML = `<strong>Total Price: PKR ${totalPrice} <br>(Estimated. Final amount will be confirmed via call.)</strong>`;
-
   summaryList.appendChild(totalLi);
 }
 
@@ -1244,14 +1199,14 @@ document.addEventListener("DOMContentLoaded", function () {
       if (field) field.required = true;
     }
   );
-  const activeTab = document.querySelector(".tab-pane.active").id;
-  if (activeTab === "female") {
+  if (document.querySelector(".tab-pane.active").id === "female") {
     document.getElementById("suitType").required = true;
     document.getElementById("laceNo").required = true;
     document.getElementById("buttonsNo").required = true;
     document.getElementById("sleeveStyleImage").required = true;
   }
   populateSleeveStyleImages();
+  setupButtonImages();
   updateActiveTab();
   updateSummary();
   updateProgress();
