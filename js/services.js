@@ -28,7 +28,7 @@ handleButtonGroupClick("maleStyleGroup", "maleStyle");
 handleButtonGroupClick("maleSizeGroup", "maleSize");
 handleButtonGroupClick("maleCollarStyleGroup", "maleCollarStyle");
 handleButtonGroupClick("maleDamaanGroup", "maleDamaan");
-handleButtonGroupClick("maleButtonTypeGroup", "maleButtonType");
+handleButtonGroupClick("maleButtonSourceGroup", "maleButtonSource");
 handleButtonGroupClick("maleButtonStyleGroup", "maleButtonStyle");
 handleButtonGroupClick("maleSleevesGroup", "maleSleeves");
 handleButtonGroupClick("maleBottomTypeGroup", "maleBottomType");
@@ -89,9 +89,6 @@ function populateSleeveStyleImages() {
   const imagePaths = [
     "images/sleeves/female/style_1.PNG",
     "images/sleeves/female/style_2.PNG",
-    "images/sleeves/female/style_3.PNG",
-    "images/sleeves/female/style_4.PNG",
-    "images/sleeves/female/style_5.PNG",
   ];
   imagePaths.forEach((src, index) => {
     const img = document.createElement("img");
@@ -119,6 +116,23 @@ function setupButtonImages() {
       this.classList.add("selected");
       buttonImageInput.value = this.src;
       buttonImageInput.dispatchEvent(new Event("change"));
+    });
+  });
+}
+
+function setupMaleButtonImages() {
+  const buttonImages = document.querySelectorAll("#maleButtonImages img");
+  const buttonImageInput = document.getElementById("maleButtonImage");
+  buttonImages.forEach((img) => {
+    img.addEventListener("click", function () {
+      buttonImages.forEach((i) => i.classList.remove("selected"));
+      this.classList.add("selected");
+      buttonImageInput.value = this.src;
+      buttonImageInput.dispatchEvent(new Event("change"));
+      const price = this.getAttribute("data-price") || 0;
+      document.getElementById(
+        "selectedMaleButtonPrice"
+      ).textContent = `Selected Button Price: PKR ${price}`;
     });
   });
 }
@@ -196,7 +210,6 @@ function updateStyleImages() {
         "images/neck_styles/female/vn_style_2.PNG",
         "images/neck_styles/female/vn_style_3.PNG",
         "images/neck_styles/female/vn_style_4.PNG",
-        "images/neck_styles/female/vn_style_5.PNG",
       ],
       Round: [
         "images/neck_styles/female/rn_style_1.PNG",
@@ -208,9 +221,6 @@ function updateStyleImages() {
       Collar: [
         "images/neck_styles/female/cn_style_1.PNG",
         "images/neck_styles/female/cn_style_2.PNG",
-        "images/neck_styles/female/cn_style_3.PNG",
-        "images/neck_styles/female/cn_style_4.PNG",
-        "images/neck_styles/female/cn_style_5.PNG",
       ],
     },
     Kameez: {
@@ -219,7 +229,6 @@ function updateStyleImages() {
         "images/neck_styles/female/vn_style_2.PNG",
         "images/neck_styles/female/vn_style_3.PNG",
         "images/neck_styles/female/vn_style_4.PNG",
-        "images/neck_styles/female/vn_style_5.PNG",
       ],
       Round: [
         "images/neck_styles/female/rn_style_1.PNG",
@@ -231,17 +240,14 @@ function updateStyleImages() {
       Collar: [
         "images/neck_styles/female/cn_style_1.PNG",
         "images/neck_styles/female/cn_style_2.PNG",
-        "images/neck_styles/female/cn_style_3.PNG",
-        "images/neck_styles/female/cn_style_4.PNG",
-        "images/neck_styles/female/cn_style_5.PNG",
       ],
     },
   };
-  if (style && neckStyle && imagePaths[style] && imagePaths[style][neckStyle]) {
+  if (style && neckStyle && imagePaths[style]?.[neckStyle]) {
     imagePaths[style][neckStyle].forEach((src, index) => {
       const img = document.createElement("img");
       img.src = src;
-      img.alt = `${style} ${neckStyle} ${index + 1}`;
+      img.alt = `Neck Style ${index + 1}`;
       img.addEventListener("click", function () {
         styleImages
           .querySelectorAll("img")
@@ -256,39 +262,32 @@ function updateStyleImages() {
   }
 }
 
-document.getElementById("style").addEventListener("change", function () {
-  updateStyleImages();
-  updateSummary();
-  updateProgress();
-});
-document.getElementById("neckStyle").addEventListener("change", function () {
-  updateStyleImages();
-  updateSummary();
-  updateProgress();
-});
+document.getElementById("style").addEventListener("change", updateStyleImages);
+document
+  .getElementById("neckStyle")
+  .addEventListener("change", updateStyleImages);
 
-document.getElementById("damaan").addEventListener("change", function () {
-  const damaan = this.value;
+function updateDamaanImages() {
+  const damaan = document.getElementById("damaan").value;
   const damaanImages = document.getElementById("damaanImages");
   const damaanImageInput = document.getElementById("damaanImage");
   damaanImages.innerHTML = "";
   damaanImageInput.value = "";
-  if (damaan) {
-    const imageSets = {
-      Round: [
-        "damaan/female/round_style_1.PNG",
-        "damaan/female/round_style_2.PNG",
-      ],
-      Square: [
-        "damaan/female/square_style_1.PNG",
-        "damaan/female/square_style_2.PNG",
-      ],
-    };
-    const images = imageSets[damaan] || [];
-    images.forEach((imageName, index) => {
+  const imagePaths = {
+    Round: [
+      "images/damaan/female/round_style_1.PNG",
+     
+    ],
+    Square: [
+      "images/damaan/female/square_style_1.PNG",
+    
+    ],
+  };
+  if (damaan && imagePaths[damaan]) {
+    imagePaths[damaan].forEach((src, index) => {
       const img = document.createElement("img");
-      img.src = `images/${imageName}`;
-      img.alt = `${damaan} Damaan ${index + 1}`;
+      img.src = src;
+      img.alt = `Damaan Style ${index + 1}`;
       img.addEventListener("click", function () {
         damaanImages
           .querySelectorAll("img")
@@ -301,180 +300,109 @@ document.getElementById("damaan").addEventListener("change", function () {
     });
     selectFirstImage("damaanImages", "damaanImage");
   }
+}
+
+document
+  .getElementById("damaan")
+  .addEventListener("change", updateDamaanImages);
+
+function updateLaceOptions() {
+  const laceYes = document.getElementById("laceYes").checked;
+  toggleSection("laceOptions", laceYes, [
+    "laceSource",
+    "laceColor",
+    "laceImage",
+    "laceFront",
+    "laceBack",
+    "laceFrontBack",
+  ]);
+  updateLaceLibraryOptions();
   updateSummary();
   updateProgress();
-});
-
-function handleLace(
-  section,
-  laceRadioYes,
-  laceRadioNo,
-  laceOptions,
-  laceSource,
-  laceLibraryOptions,
-  laceImageInputId
-) {
-  const options = document.getElementById(laceOptions);
-  const libraryOptions = document.getElementById(laceLibraryOptions);
-  const laceImageInput = document.getElementById(laceImageInputId);
-  const laceSourceSelect = document.getElementById(laceSource);
-  const laceColorInput = document.getElementById(`${section}LaceColor`);
-  const priceDisplayId = `selectedLacePrice${
-    section.charAt(0).toUpperCase() + section.slice(1)
-  }`;
-
-  document.getElementById(laceRadioYes).addEventListener("change", function () {
-    toggleSection(laceOptions, true, [laceSource]);
-    updateSummary();
-    updateProgress();
-  });
-
-  document.getElementById(laceRadioNo).addEventListener("change", function () {
-    toggleSection(laceOptions, false, [laceSource]);
-    toggleSection(laceLibraryOptions, false, [laceColorInput?.id]);
-    laceImageInput.value = "";
-    document.getElementById(priceDisplayId).textContent =
-      "Selected Lace Price: PKR 0 per gazz";
-    updateSummary();
-    updateProgress();
-  });
-
-  laceSourceSelect.addEventListener("change", function () {
-    const isLibrary = this.value === "library";
-    toggleSection(laceLibraryOptions, isLibrary, [laceColorInput?.id]);
-    if (!isLibrary) {
-      laceImageInput.value = "";
-      document.getElementById(priceDisplayId).textContent =
-        "Selected Lace Price: PKR 0 per gazz";
-    }
-    if (isLibrary) {
-      const laceImages = document.querySelectorAll(
-        `#${laceLibraryOptions} .image-gallery img`
-      );
-      laceImages.forEach((img) => {
-        img.addEventListener("click", function () {
-          laceImages.forEach((i) => i.classList.remove("selected"));
-          this.classList.add("selected");
-          laceImageInput.value = this.src;
-          laceImageInput.dispatchEvent(new Event("change"));
-          const price = this.getAttribute("data-price") || 0;
-          document.getElementById(
-            priceDisplayId
-          ).textContent = `Selected Lace Price: PKR ${price} per gazz`;
-        });
-      });
-      selectFirstImage(
-        laceLibraryOptions.replace("Options", "Images"),
-        laceImageInputId
-      );
-      const firstImage = laceImages[0];
-      if (firstImage) {
-        const price = firstImage.getAttribute("data-price") || 0;
-        document.getElementById(
-          priceDisplayId
-        ).textContent = `Selected Lace Price: PKR ${price} per gazz`;
-      }
-    }
-    updateSummary();
-    updateProgress();
-  });
 }
 
-handleLace(
-  "top",
-  "laceYes",
-  "laceNo",
-  "laceOptions",
-  "laceSource",
-  "laceLibraryOptions",
-  "laceImage"
-);
-handleLace(
-  "bottom",
-  "bottomLaceYes",
-  "bottomLaceNo",
-  "bottomLaceOptions",
-  "bottomLaceSource",
-  "bottomLaceLibraryOptions",
-  "bottomLaceImage"
-);
-handleLace(
-  "dupatta",
-  "dupattaLaceYes",
-  "dupattaLaceNo",
-  "dupattaLaceOptions",
-  "dupattaLaceSource",
-  "dupattaLaceLibraryOptions",
-  "dupattaLaceImage"
-);
-
-function handleButtons(
-  buttonsYes,
-  buttonsNo,
-  buttonOptions,
-  buttonStyleId,
-  buttonImageId
-) {
-  document.getElementById(buttonsYes).addEventListener("change", function () {
-    toggleSection(buttonOptions, true, [buttonStyleId]);
-    selectFirstImage("buttonImages", buttonImageId);
-    updateSummary();
-    updateProgress();
+function updateLaceLibraryOptions() {
+  const laceSource = document.getElementById("laceSource").value;
+  const isLibrary = laceSource === "library";
+  toggleSection("laceLibraryOptions", isLibrary, ["laceColor", "topLaceImage"]);
+  const laceImages = document.querySelectorAll("#topLaceImages img");
+  const laceImageInput = document.getElementById("topLaceImage");
+  laceImages.forEach((img) => {
+    img.addEventListener("click", function () {
+      laceImages.forEach((i) => i.classList.remove("selected"));
+      this.classList.add("selected");
+      laceImageInput.value = this.src;
+      laceImageInput.dispatchEvent(new Event("change"));
+      const price = this.getAttribute("data-price") || 0;
+      document.getElementById(
+        "selectedLacePriceTop"
+      ).textContent = `Selected Lace Price: PKR ${price} per gazz`;
+    });
   });
-  document.getElementById(buttonsNo).addEventListener("change", function () {
-    toggleSection(buttonOptions, false, [buttonStyleId]);
-    document.getElementById(buttonImageId).value = "";
-    updateSummary();
-    updateProgress();
-  });
+  if (isLibrary) selectFirstImage("topLaceImages", "topLaceImage");
+  updateSummary();
+  updateProgress();
 }
 
-handleButtons(
-  "buttonsYes",
-  "buttonsNo",
-  "buttonOptions",
-  "buttonStyle",
-  "buttonImage"
-);
-handleButtons(
-  "maleButtonsYes",
-  "maleButtonsNo",
-  "maleButtonOptions",
-  "maleButtonStyle",
-  "maleButtonImage"
-);
+document
+  .getElementById("laceYes")
+  .addEventListener("change", updateLaceOptions);
+document.getElementById("laceNo").addEventListener("change", updateLaceOptions);
+document
+  .getElementById("laceSource")
+  .addEventListener("change", updateLaceLibraryOptions);
 
-document.getElementById("buttonStyle").addEventListener("change", function () {
-  const buttonStyle = this.value;
+function updateButtonOptions() {
+  const buttonsYes = document.getElementById("buttonsYes").checked;
+  toggleSection("buttonOptions", buttonsYes, ["buttonStyle", "buttonImage"]);
+  setupButtonImages();
+  if (buttonsYes) selectFirstImage("buttonImages", "buttonImage");
+  updateSummary();
+  updateProgress();
+}
+
+document
+  .getElementById("buttonsYes")
+  .addEventListener("change", updateButtonOptions);
+document
+  .getElementById("buttonsNo")
+  .addEventListener("change", updateButtonOptions);
+
+function updateButtonStyleImages() {
+  const buttonStyle = document.getElementById("buttonStyle").value;
   const buttonStyleImages = document.getElementById("buttonStyleImages");
   const buttonStyleImageInput = document.getElementById("buttonStyleImage");
   buttonStyleImages.innerHTML = "";
   buttonStyleImageInput.value = "";
   const imagePaths = {
-    single: "images/buttons/female/single_placket.PNG",
-    double: "images/buttons/female/double_placket.PNG",
+    double: ["images/buttons/female/double_placket.PNG"],
+    single: ["images/buttons/female/single_placket.PNG"],
   };
   if (buttonStyle && imagePaths[buttonStyle]) {
-    const img = document.createElement("img");
-    img.src = imagePaths[buttonStyle];
-    img.alt = `${buttonStyle} Placket`;
-    img.addEventListener("click", function () {
-      buttonStyleImages
-        .querySelectorAll("img")
-        .forEach((i) => i.classList.remove("selected"));
-      this.classList.add("selected");
-      buttonStyleImageInput.value = this.src;
-      buttonStyleImageInput.dispatchEvent(new Event("change"));
+    imagePaths[buttonStyle].forEach((src, index) => {
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = `Button Style ${index + 1}`;
+      img.addEventListener("click", function () {
+        buttonStyleImages
+          .querySelectorAll("img")
+          .forEach((i) => i.classList.remove("selected"));
+        this.classList.add("selected");
+        buttonStyleImageInput.value = this.src;
+        buttonStyleImageInput.dispatchEvent(new Event("change"));
+      });
+      buttonStyleImages.appendChild(img);
     });
-    buttonStyleImages.appendChild(img);
     selectFirstImage("buttonStyleImages", "buttonStyleImage");
   }
-  updateSummary();
-  updateProgress();
-});
+}
 
-document.getElementById("bottomType").addEventListener("change", function () {
-  const bottomType = this.value;
+document
+  .getElementById("buttonStyle")
+  .addEventListener("change", updateButtonStyleImages);
+
+function updateBottomStyleImages() {
+  const bottomType = document.getElementById("bottomType").value;
   const bottomStyleImages = document.getElementById("bottomStyleImages");
   const bottomStyleImageInput = document.getElementById("bottomStyleImage");
   bottomStyleImages.innerHTML = "";
@@ -484,6 +412,7 @@ document.getElementById("bottomType").addEventListener("change", function () {
       "images/shalwar/female/style_1.PNG",
       "images/shalwar/female/style_2.PNG",
       "images/shalwar/female/style_3.PNG",
+      "images/shalwar/female/style_4.PNG",
     ],
     Trouser: [
       "images/trouser/female/style_1.PNG",
@@ -495,7 +424,7 @@ document.getElementById("bottomType").addEventListener("change", function () {
     imagePaths[bottomType].forEach((src, index) => {
       const img = document.createElement("img");
       img.src = src;
-      img.alt = `${bottomType} Style ${index + 1}`;
+      img.alt = `Bottom Style ${index + 1}`;
       img.addEventListener("click", function () {
         bottomStyleImages
           .querySelectorAll("img")
@@ -508,123 +437,222 @@ document.getElementById("bottomType").addEventListener("change", function () {
     });
     selectFirstImage("bottomStyleImages", "bottomStyleImage");
   }
+}
+
+document
+  .getElementById("bottomType")
+  .addEventListener("change", updateBottomStyleImages);
+
+function updateBottomLaceOptions() {
+  const bottomLaceYes = document.getElementById("bottomLaceYes").checked;
+  toggleSection("bottomLaceOptions", bottomLaceYes, [
+    "bottomLaceSource",
+    "bottomLaceColor",
+    "bottomLaceImage",
+  ]);
+  updateBottomLaceLibraryOptions();
   updateSummary();
   updateProgress();
-});
+}
+
+function updateBottomLaceLibraryOptions() {
+  const bottomLaceSource = document.getElementById("bottomLaceSource").value;
+  const isLibrary = bottomLaceSource === "library";
+  toggleSection("bottomLaceLibraryOptions", isLibrary, [
+    "bottomLaceColor",
+    "bottomLaceImage",
+  ]);
+  const laceImages = document.querySelectorAll("#bottomLaceImages img");
+  const bottomLaceImageInput = document.getElementById("bottomLaceImage");
+  laceImages.forEach((img) => {
+    img.addEventListener("click", function () {
+      laceImages.forEach((i) => i.classList.remove("selected"));
+      this.classList.add("selected");
+      bottomLaceImageInput.value = this.src;
+      bottomLaceImageInput.dispatchEvent(new Event("change"));
+      const price = this.getAttribute("data-price") || 0;
+      document.getElementById(
+        "selectedLacePriceBottom"
+      ).textContent = `Selected Lace Price: PKR ${price} per gazz`;
+    });
+  });
+  if (isLibrary) selectFirstImage("bottomLaceImages", "bottomLaceImage");
+  updateSummary();
+  updateProgress();
+}
+document
+  .getElementById("bottomLaceYes")
+  .addEventListener("change", updateBottomLaceOptions);
+document
+  .getElementById("bottomLaceNo")
+  .addEventListener("change", updateBottomLaceOptions);
+document
+  .getElementById("bottomLaceSource")
+  .addEventListener("change", updateBottomLaceLibraryOptions);
+
+function updateDupattaLaceOptions() {
+  const dupattaLaceYes = document.getElementById("dupattaLaceYes").checked;
+  toggleSection("dupattaLaceOptions", dupattaLaceYes, [
+    "dupattaLaceSource",
+    "dupattaLaceColor",
+    "dupattaLaceImage",
+    "dupattaLacePallu",
+    "dupattaLaceAllSides",
+  ]);
+  updateDupattaLaceLibraryOptions();
+  updateSummary();
+  updateProgress();
+}
+
+function updateDupattaLaceLibraryOptions() {
+  const dupattaLaceSource = document.getElementById("dupattaLaceSource").value;
+  const isLibrary = dupattaLaceSource === "library";
+  toggleSection("dupattaLaceLibraryOptions", isLibrary, [
+    "dupattaLaceColor",
+    "dupattaLaceImage",
+  ]);
+  const laceImages = document.querySelectorAll("#dupattaLaceImages img");
+  const dupattaLaceImageInput = document.getElementById("dupattaLaceImage");
+  laceImages.forEach((img) => {
+    img.addEventListener("click", function () {
+      laceImages.forEach((i) => i.classList.remove("selected"));
+      this.classList.add("selected");
+      dupattaLaceImageInput.value = this.src;
+      dupattaLaceImageInput.dispatchEvent(new Event("change"));
+      const price = this.getAttribute("data-price") || 0;
+      document.getElementById(
+        "selectedLacePriceDupatta"
+      ).textContent = `Selected Lace Price: PKR ${price} per gazz`;
+    });
+  });
+  if (isLibrary) selectFirstImage("dupattaLaceImages", "dupattaLaceImage");
+  updateSummary();
+  updateProgress();
+}
+
+document
+  .getElementById("dupattaLaceYes")
+  .addEventListener("change", updateDupattaLaceOptions);
+document
+  .getElementById("dupattaLaceNo")
+  .addEventListener("change", updateDupattaLaceOptions);
+document
+  .getElementById("dupattaLaceSource")
+  .addEventListener("change", updateDupattaLaceLibraryOptions);
+
+function updateMaleCollarImages() {
+  const collarStyle = document.getElementById("maleCollarStyle").value;
+  const collarImages = document.getElementById("maleCollarImages");
+  const collarImageInput = document.getElementById("maleCollarImage");
+  collarImages.innerHTML = "";
+  collarImageInput.value = "";
+  const imagePaths = {
+    Sherwani: ["images/neck_styles/male/semi_collar.PNG"],
+    Full: ["images/neck_styles/male/full_collar.PNG"],
+  };
+  if (collarStyle && imagePaths[collarStyle]) {
+    imagePaths[collarStyle].forEach((src, index) => {
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = `Collar Style ${index + 1}`;
+      img.addEventListener("click", function () {
+        collarImages
+          .querySelectorAll("img")
+          .forEach((i) => i.classList.remove("selected"));
+        this.classList.add("selected");
+        collarImageInput.value = this.src;
+        collarImageInput.dispatchEvent(new Event("change"));
+      });
+      collarImages.appendChild(img);
+    });
+    selectFirstImage("maleCollarImages", "maleCollarImage");
+  }
+}
 
 document
   .getElementById("maleCollarStyle")
-  .addEventListener("change", function () {
-    const collarStyle = this.value;
-    const collarImages = document.getElementById("maleCollarImages");
-    const collarImageInput = document.getElementById("maleCollarImage");
-    collarImages.innerHTML = "";
-    collarImageInput.value = "";
-    const imagePaths = {
-      Sherwani: ["images/neck_styles/male/semi_collar.PNG"],
-      Full: ["images/neck_styles/male/full_collar.PNG"],
-    };
-    if (collarStyle && imagePaths[collarStyle]) {
-      imagePaths[collarStyle].forEach((src, index) => {
-        const img = document.createElement("img");
-        img.src = src;
-        img.alt = `${collarStyle} Collar ${index + 1}`;
-        img.addEventListener("click", function () {
-          collarImages
-            .querySelectorAll("img")
-            .forEach((i) => i.classList.remove("selected"));
-          this.classList.add("selected");
-          collarImageInput.value = this.src;
-          collarImageInput.dispatchEvent(new Event("change"));
-        });
-        collarImages.appendChild(img);
-      });
-      selectFirstImage("maleCollarImages", "maleCollarImage");
-    }
-    updateSummary();
-    updateProgress();
-  });
+  .addEventListener("change", updateMaleCollarImages);
 
-document.getElementById("maleDamaan").addEventListener("change", function () {
-  const damaan = this.value;
+function updateMaleDamaanImages() {
+  const damaan = document.getElementById("maleDamaan").value;
   const damaanImages = document.getElementById("maleDamaanImages");
   const damaanImageInput = document.getElementById("maleDamaanImage");
   damaanImages.innerHTML = "";
   damaanImageInput.value = "";
-  if (damaan) {
-    const img = document.createElement("img");
-    img.src = `images/damaan/male/${damaan}.PNG`;
-    img.alt = `${damaan} Damaan`;
-    img.addEventListener("click", function () {
-      damaanImages
-        .querySelectorAll("img")
-        .forEach((i) => i.classList.remove("selected"));
-      this.classList.add("selected");
-      damaanImageInput.value = this.src;
-      damaanImageInput.dispatchEvent(new Event("change"));
-    });
-    damaanImages.appendChild(img);
-    selectFirstImage("maleDamaanImages", "maleDamaanImage");
-  }
-  updateSummary();
-  updateProgress();
-});
-
-document
-  .getElementById("maleButtonType")
-  .addEventListener("change", function () {
-    const buttonType = this.value;
-    const buttonImages = document.getElementById("maleButtonImages");
-    const buttonImageInput = document.getElementById("maleButtonImage");
-    buttonImages.innerHTML = "";
-    buttonImageInput.value = "";
-    if (buttonType) {
+  const imagePaths = {
+    Round: ["images/damaan/male/round.PNG"],
+    Square: ["images/damaan/male/square.PNG"],
+  };
+  if (damaan && imagePaths[damaan]) {
+    imagePaths[damaan].forEach((src, index) => {
       const img = document.createElement("img");
-      img.src = `images/Male ${buttonType} Button.jpg`;
-      img.alt = `${buttonType} Button`;
+      img.src = src;
+      img.alt = `Damaan Style ${index + 1}`;
       img.addEventListener("click", function () {
-        buttonImages
+        damaanImages
           .querySelectorAll("img")
           .forEach((i) => i.classList.remove("selected"));
         this.classList.add("selected");
-        buttonImageInput.value = this.src;
-        buttonImageInput.dispatchEvent(new Event("change"));
+        damaanImageInput.value = this.src;
+        damaanImageInput.dispatchEvent(new Event("change"));
       });
-      buttonImages.appendChild(img);
-      selectFirstImage("maleButtonImages", "maleButtonImage");
-    }
-    updateSummary();
-    updateProgress();
-  });
-
-document.querySelectorAll("#maleButtonTypeGroup .btn").forEach((button) => {
-  button.addEventListener("click", function () {
-    const price = this.getAttribute("data-price") || 0;
-    document.getElementById(
-      "selectedMaleButtonPrice"
-    ).textContent = `Selected Button Type Price: PKR ${price}`;
-    updateSummary();
-  });
-});
+      damaanImages.appendChild(img);
+    });
+    selectFirstImage("maleDamaanImages", "maleDamaanImage");
+  }
+}
 
 document
-  .getElementById("maleButtonStyle")
-  .addEventListener("change", function () {
-    const buttonStyle = this.value;
-    const buttonStyleImages = document.getElementById("maleButtonStyleImages");
-    const buttonStyleImageInput = document.getElementById(
-      "maleButtonStyleImage"
-    );
-    buttonStyleImages.innerHTML = "";
-    buttonStyleImageInput.value = "";
-    const imagePaths = {
-      single: "images/buttons/male/single_placket.PNG",
-      double: "images/buttons/male/double_placket.PNG",
-    };
-    if (buttonStyle && imagePaths[buttonStyle]) {
+  .getElementById("maleDamaan")
+  .addEventListener("change", updateMaleDamaanImages);
+
+function updateMaleButtonOptions() {
+  const buttonsYes = document.getElementById("maleButtonsYes").checked;
+  toggleSection("maleButtonOptions", buttonsYes, [
+    "maleButtonSource",
+    "maleButtonStyle",
+    "maleButtonImage",
+  ]);
+  updateMaleButtonLibraryOptions();
+  setupMaleButtonImages();
+  updateSummary();
+  updateProgress();
+}
+
+function updateMaleButtonLibraryOptions() {
+  const buttonSource = document.getElementById("maleButtonSource").value;
+  const isLibrary = buttonSource === "library";
+  toggleSection("maleButtonLibraryOptions", isLibrary, ["maleButtonImage"]);
+  if (isLibrary) selectFirstImage("maleButtonImages", "maleButtonImage");
+  updateSummary();
+  updateProgress();
+}
+
+document
+  .getElementById("maleButtonsYes")
+  .addEventListener("change", updateMaleButtonOptions);
+document
+  .getElementById("maleButtonsNo")
+  .addEventListener("change", updateMaleButtonOptions);
+document
+  .getElementById("maleButtonSource")
+  .addEventListener("change", updateMaleButtonLibraryOptions);
+
+function updateMaleButtonStyleImages() {
+  const buttonStyle = document.getElementById("maleButtonStyle").value;
+  const buttonStyleImages = document.getElementById("maleButtonStyleImages");
+  const buttonStyleImageInput = document.getElementById("maleButtonStyleImage");
+  buttonStyleImages.innerHTML = "";
+  buttonStyleImageInput.value = "";
+  const imagePaths = {
+    double: ["images/buttons/male/double_placket.PNG"],
+    single: ["images/buttons/male/single_placket.PNG"],
+  };
+  if (buttonStyle && imagePaths[buttonStyle]) {
+    imagePaths[buttonStyle].forEach((src, index) => {
       const img = document.createElement("img");
-      img.src = imagePaths[buttonStyle];
-      img.alt = `${buttonStyle} Placket`;
+      img.src = src;
+      img.alt = `Button Style ${index + 1}`;
       img.addEventListener("click", function () {
         buttonStyleImages
           .querySelectorAll("img")
@@ -634,593 +662,494 @@ document
         buttonStyleImageInput.dispatchEvent(new Event("change"));
       });
       buttonStyleImages.appendChild(img);
-      selectFirstImage("maleButtonStyleImages", "maleButtonStyleImage");
-    }
-    updateSummary();
-    updateProgress();
-  });
+    });
+    selectFirstImage("maleButtonStyleImages", "maleButtonStyleImage");
+  }
+}
 
-document.getElementById("maleSleeves").addEventListener("change", function () {
-  const sleeves = this.value;
+document
+  .getElementById("maleButtonStyle")
+  .addEventListener("change", updateMaleButtonStyleImages);
+
+function updateMaleSleevesImages() {
+  const sleeves = document.getElementById("maleSleeves").value;
   const sleevesImages = document.getElementById("maleSleevesImages");
   const sleevesImageInput = document.getElementById("maleSleevesImage");
+  const disclaimer =
+    document.getElementById("maleSleevesDisclaimer") ||
+    document.createElement("p");
+  disclaimer.id = "maleSleevesDisclaimer";
+  disclaimer.className = "disclaimer mt-2";
+  disclaimer.style.display = sleeves === "Cuff" ? "block" : "none";
+  disclaimer.textContent =
+    "Disclaimer: Cuff sleeves include two buttons per sleeve (total 4 buttons) for an additional PKR 100.";
+  sleevesImages.parentNode.insertBefore(disclaimer, sleevesImages.nextSibling);
   sleevesImages.innerHTML = "";
   sleevesImageInput.value = "";
-  if (sleeves) {
-    const img = document.createElement("img");
-    img.src = `images/sleeves/male/${sleeves}.PNG`;
-    img.alt = `${sleeves} Sleeves`;
-    img.addEventListener("click", function () {
-      sleevesImages
-        .querySelectorAll("img")
-        .forEach((i) => i.classList.remove("selected"));
-      this.classList.add("selected");
-      sleevesImageInput.value = this.src;
-      sleevesImageInput.dispatchEvent(new Event("change"));
+  const imagePaths = {
+    Straight: ["images/sleeves/male/straight.PNG"],
+    Cuff: ["images/sleeves/male/cuff.PNG"],
+  };
+  if (sleeves && imagePaths[sleeves]) {
+    imagePaths[sleeves].forEach((src, index) => {
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = `Sleeves Style ${index + 1}`;
+      img.addEventListener("click", function () {
+        sleevesImages
+          .querySelectorAll("img")
+          .forEach((i) => i.classList.remove("selected"));
+        this.classList.add("selected");
+        sleevesImageInput.value = this.src;
+        sleevesImageInput.dispatchEvent(new Event("change"));
+      });
+      sleevesImages.appendChild(img);
     });
-    sleevesImages.appendChild(img);
     selectFirstImage("maleSleevesImages", "maleSleevesImage");
   }
   updateSummary();
   updateProgress();
-});
+}
+
+document
+  .getElementById("maleSleeves")
+  .addEventListener("change", updateMaleSleevesImages);
+
+function updateMaleBottomStyleImages() {
+  const bottomType = document.getElementById("maleBottomType").value;
+  const bottomStyleImages = document.getElementById("maleBottomStyleImages");
+  const bottomStyleImageInput = document.getElementById("maleBottomStyleImage");
+  bottomStyleImages.innerHTML = "";
+  bottomStyleImageInput.value = "";
+  const imagePaths = {
+    Shalwar: ["images/shalwar/male/style_1.PNG"],
+    Trouser: ["images/trouser/male/style_1.PNG"],
+  };
+  if (bottomType && imagePaths[bottomType]) {
+    imagePaths[bottomType].forEach((src, index) => {
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = `Bottom Style ${index + 1}`;
+      img.addEventListener("click", function () {
+        bottomStyleImages
+          .querySelectorAll("img")
+          .forEach((i) => i.classList.remove("selected"));
+        this.classList.add("selected");
+        bottomStyleImageInput.value = this.src;
+        bottomStyleImageInput.dispatchEvent(new Event("change"));
+      });
+      bottomStyleImages.appendChild(img);
+    });
+    selectFirstImage("maleBottomStyleImages", "maleBottomStyleImage");
+  }
+  toggleSection("maleShalwarChart", bottomType === "Shalwar");
+  toggleSection("maleTrouserChart", bottomType === "Trouser");
+}
 
 document
   .getElementById("maleBottomType")
-  .addEventListener("change", function () {
-    const bottomType = this.value;
-    toggleSection("maleShalwarChart", bottomType === "Shalwar");
-    toggleSection("maleTrouserChart", bottomType === "Trouser");
-    const bottomStyleImages = document.getElementById("maleBottomStyleImages");
-    const bottomStyleImageInput = document.getElementById(
-      "maleBottomStyleImage"
-    );
-    bottomStyleImages.innerHTML = "";
-    bottomStyleImageInput.value = "";
-    const imagePaths = {
-      Shalwar: ["images/shalwar/male/style_1.PNG"],
-      Trouser: ["images/trouser/male/style_1.PNG"],
-    };
-    if (bottomType && imagePaths[bottomType]) {
-      imagePaths[bottomType].forEach((src, index) => {
-        const img = document.createElement("img");
-        img.src = src;
-        img.alt = `${bottomType} Style ${index + 1}`;
-        img.addEventListener("click", function () {
-          bottomStyleImages
-            .querySelectorAll("img")
-            .forEach((i) => i.classList.remove("selected"));
-          this.classList.add("selected");
-          bottomStyleImageInput.value = this.src;
-          bottomStyleImageInput.dispatchEvent(new Event("change"));
-        });
-        bottomStyleImages.appendChild(img);
-      });
-      selectFirstImage("maleBottomStyleImages", "maleBottomStyleImage");
-    }
-    updateSummary();
-    updateProgress();
-  });
-
-document.querySelectorAll(".nav-link").forEach((tab) => {
-  tab.addEventListener("shown.bs.tab", function () {
-    const activeTab = document.querySelector(".tab-pane.active").id;
-    document
-      .querySelectorAll('#female [name^="female"], #male [name^="male"]')
-      .forEach((field) => {
-        field.required = false;
-      });
-    if (activeTab === "female") {
-      ["suitType", "sleeveStyleImage"].forEach((id) => {
-        const field = document.getElementById(id);
-        if (field) field.required = true;
-      });
-      document
-        .querySelectorAll('#female .section.active [name^="female"]')
-        .forEach((field) => {
-          field.required = true;
-        });
-      ["lace", "buttons", "bottomLace", "dupattaLace"].forEach((name) => {
-        document
-          .querySelectorAll(`input[name="female[${name}]"]`)
-          .forEach((radio) => {
-            radio.required = true;
-          });
-      });
-    } else if (activeTab === "male") {
-      [
-        "maleStyle",
-        "maleSize",
-        "maleCollarStyle",
-        "maleDamaan",
-        "maleSleeves",
-        "maleBottomType",
-        "maleBottomSize",
-      ].forEach((id) => {
-        const field = document.getElementById(id);
-        if (field) field.required = true;
-      });
-      document
-        .querySelectorAll('#male .section.active [name^="male"]')
-        .forEach((field) => {
-          field.required = true;
-        });
-      ["maleButtons"].forEach((name) => {
-        document
-          .querySelectorAll(`input[name="male[${name}]"]`)
-          .forEach((radio) => {
-            radio.required = true;
-          });
-      });
-    }
-    [
-      "fullName",
-      "email",
-      "streetAddress",
-      "city",
-      "postalCode",
-      "phone",
-    ].forEach((id) => {
-      const field = document.getElementById(id);
-      if (field) field.required = true;
-    });
-    updateActiveTab();
-    updateSummary();
-    updateProgress();
-  });
-});
+  .addEventListener("change", updateMaleBottomStyleImages);
 
 function calculateTotalPrice() {
-  let totalPrice = 0;
-  const activeTab = document.querySelector(".tab-pane.active").id;
+  const activeTab = document.getElementById("activeTab").value;
+  let total = 0;
 
   if (activeTab === "female") {
-    const suitTypeButton = document.querySelector("#suitTypeGroup .btn.active");
-    if (suitTypeButton) {
-      totalPrice += parseInt(suitTypeButton.getAttribute("data-price")) || 0;
-    }
+    const suitType = document.getElementById("suitType").value;
+    const suitPrices = {
+      "1piece": 1500,
+      "2pieceTD": 2000,
+      "2pieceTB": 2000,
+      "3piece": 2500,
+    };
+    total += suitPrices[suitType] || 0;
 
-    const topLace = document.querySelector(
-      'input[name="female[lace]"]:checked'
-    )?.value;
-    if (topLace === "yes") {
-      const laceSource = document.getElementById("laceSource").value;
-      if (laceSource === "library") {
-        const selectedLaceImage = document.querySelector(
-          "#laceImages img.selected"
-        );
-        if (selectedLaceImage) {
-          totalPrice +=
-            parseInt(selectedLaceImage.getAttribute("data-price")) || 0;
+    if (
+      document.getElementById("laceYes").checked &&
+      document.getElementById("laceSource").value === "library"
+    ) {
+      const laceImage = document.getElementById("topLaceImage").value;
+      const laceImages = document.querySelectorAll("#topLaceImages img");
+      let lacePrice = 0;
+      laceImages.forEach((img) => {
+        if (img.src === laceImage) {
+          lacePrice = parseInt(img.getAttribute("data-price")) || 0;
         }
-      }
+      });
+      total += lacePrice;
     }
 
-    const buttons = document.querySelector(
-      'input[name="female[buttons]"]:checked'
-    )?.value;
-    if (buttons === "yes") {
-      totalPrice += 25; // Fixed price for fabric covered buttons
-    }
-
-    const bottomSection = document.getElementById("bottomSection");
-    if (bottomSection.classList.contains("active")) {
-      const bottomLace = document.querySelector(
-        'input[name="female[bottomLace]"]:checked'
-      )?.value;
-      if (bottomLace === "yes") {
-        const bottomLaceSource =
-          document.getElementById("bottomLaceSource").value;
-        if (bottomLaceSource === "library") {
-          const selectedBottomLaceImage = document.querySelector(
-            "#bottomLaceImages img.selected"
-          );
-          if (selectedBottomLaceImage) {
-            totalPrice +=
-              parseInt(selectedBottomLaceImage.getAttribute("data-price")) || 0;
-          }
+    if (
+      document.getElementById("bottomLaceYes").checked &&
+      document.getElementById("bottomLaceSource").value === "library"
+    ) {
+      const bottomLaceImage = document.getElementById("bottomLaceImage").value;
+      const laceImages = document.querySelectorAll("#bottomLaceImages img");
+      let bottomLacePrice = 0;
+      laceImages.forEach((img) => {
+        if (img.src === bottomLaceImage) {
+          bottomLacePrice = parseInt(img.getAttribute("data-price")) || 0;
         }
-      }
+      });
+      total += bottomLacePrice;
     }
 
-    const dupattaSection = document.getElementById("dupattaSection");
-    if (dupattaSection.classList.contains("active")) {
-      const dupattaLace = document.querySelector(
-        'input[name="female[dupattaLace]"]:checked'
-      )?.value;
-      if (dupattaLace === "yes") {
-        const dupattaLaceSource =
-          document.getElementById("dupattaLaceSource").value;
-        if (dupattaLaceSource === "library") {
-          const selectedDupattaLaceImage = document.querySelector(
-            "#dupattaLaceImages img.selected"
-          );
-          if (selectedDupattaLaceImage) {
-            totalPrice +=
-              parseInt(selectedDupattaLaceImage.getAttribute("data-price")) ||
-              0;
-          }
+    if (
+      document.getElementById("dupattaLaceYes").checked &&
+      document.getElementById("dupattaLaceSource").value === "library"
+    ) {
+      const dupattaLaceImage =
+        document.getElementById("dupattaLaceImage").value;
+      const laceImages = document.querySelectorAll("#dupattaLaceImages img");
+      let dupattaLacePrice = 0;
+      laceImages.forEach((img) => {
+        if (img.src === dupattaLaceImage) {
+          dupattaLacePrice = parseInt(img.getAttribute("data-price")) || 0;
         }
-      }
+      });
+      total += dupattaLacePrice;
+    }
+    if (document.getElementById("buttonsYes").checked) {
+      const buttonImage = document.getElementById("buttonImage").value;
+      const buttonImages = document.querySelectorAll("#buttonImages img");
+      let buttonPrice = 0;
+      buttonImages.forEach((img) => {
+        if (img.src === buttonImage) {
+          buttonPrice = parseInt(img.getAttribute("data-price")) || 0;
+        }
+      });
+      total += buttonPrice;
     }
   } else if (activeTab === "male") {
-    totalPrice += 1500; // Fixed stitching price
-
-    const buttons = document.querySelector(
-      'input[name="male[buttons]"]:checked'
-    )?.value;
-    if (buttons === "yes") {
-      const buttonTypeButton = document.querySelector(
-        "#maleButtonTypeGroup .btn.active"
-      );
-      if (buttonTypeButton) {
-        totalPrice +=
-          parseInt(buttonTypeButton.getAttribute("data-price")) || 0;
-      }
+    total += 1500; // Base price for male kurta and bottom
+    if (
+      document.getElementById("maleButtonsYes").checked &&
+      document.getElementById("maleButtonSource").value === "library"
+    ) {
+      const buttonImage = document.getElementById("maleButtonImage").value;
+      const buttonImages = document.querySelectorAll("#maleButtonImages img");
+      let buttonPrice = 0;
+      buttonImages.forEach((img) => {
+        if (img.src === buttonImage) {
+          buttonPrice = parseInt(img.getAttribute("data-price")) || 0;
+        }
+      });
+      total += buttonPrice;
+    }
+    if (document.getElementById("maleSleeves").value === "Cuff") {
+      total += 100; // Additional cost for cuff sleeves
     }
   }
 
-  return totalPrice;
+  return total;
+}
+// Add event listeners to update total price on form changes
+function setupEventListeners() {
+  // Example: Update summary and total price on input changes
+  const inputs = document.querySelectorAll(
+    "#suitType, #laceYes, #laceNo, #laceSource, #topLaceImage, #bottomLaceYes, #bottomLaceNo, #bottomLaceSource, #bottomLaceImage, #dupattaLaceYes, #dupattaLaceNo, #dupattaLaceSource, #dupattaLaceImage, #buttonsYes, #buttonsNo, #buttonImage, #maleButtonsYes, #maleButtonsNo, #maleButtonSource, #maleButtonImage, #maleSleeves"
+  );
+  inputs.forEach((input) => {
+    input.addEventListener("change", updateSummary);
+  });
+
+  // Handle image selections
+  const imageContainers = [
+    "topLaceImages",
+    "bottomLaceImages",
+    "dupattaLaceImages",
+    "buttonImages",
+    "maleButtonImages",
+  ];
+  imageContainers.forEach((containerId) => {
+    const images = document.querySelectorAll(`#${containerId} img`);
+    images.forEach((img) => {
+      img.addEventListener("click", () => {
+        const inputId =
+          containerId === "topLaceImages"
+            ? "topLaceImage"
+            : containerId === "bottomLaceImages"
+            ? "bottomLaceImage"
+            : containerId === "dupattaLaceImages"
+            ? "dupattaLaceImage"
+            : containerId === "buttonImages"
+            ? "buttonImage"
+            : "maleButtonImage";
+        document.getElementById(inputId).value = img.src;
+        updateSummary();
+      });
+    });
+  });
 }
 
+// Call setupEventListeners when the page loads
+document.addEventListener("DOMContentLoaded", setupEventListeners);
 function updateSummary() {
   const summaryList = document.getElementById("summaryList");
   summaryList.innerHTML = "";
-  const activeTab = document.querySelector(".tab-pane.active").id;
+  const activeTab = document.getElementById("activeTab").value;
+
   if (activeTab === "female") {
-    const suitType =
-      document.getElementById("suitType").value || "Not selected";
-    const topSize = document.getElementById("topSize").value || "Not selected";
-    const style = document.getElementById("style").value || "Not selected";
-    const neckStyle =
-      document.getElementById("neckStyle").value || "Not selected";
-    const customTopLength =
-      document.getElementById("customTopLength").value || "Not selected";
-    const sleeveLength =
-      document.getElementById("sleeveLength").value || "Not selected";
-    const sleeveStyleImage = getImageName(
-      document.getElementById("sleeveStyleImage").value
-    );
+    const suitType = document.getElementById("suitType").value;
+    const topSize = document.getElementById("topSize").value;
+    const style = document.getElementById("style").value;
+    const neckStyle = document.getElementById("neckStyle").value;
+    const styleImage = document.getElementById("styleImage").value;
+    const customTopLength = document.getElementById("customTopLength").value;
+    const sleeveLength = document.getElementById("sleeveLength").value;
+    const sleeveStyleImage = document.getElementById("sleeveStyleImage").value;
     const customSleeveLength =
-      document.getElementById("customSleeveLength").value || "Not selected";
-    const damaan = document.getElementById("damaan").value || "Not selected";
-    const damaanImage = getImageName(
-      document.getElementById("damaanImage").value
-    );
-    const lace =
-      document.querySelector('input[name="female[lace]"]:checked')?.value ||
-      "Not selected";
-    let laceDetails = "None";
-    if (lace === "yes") {
-      const laceSource =
-        document.getElementById("laceSource").value || "Not selected";
-      const laceColor =
-        document.getElementById("laceColor").value || "Not selected";
-      const laceImage = getImageName(
-        document.getElementById("laceImage").value
-      );
-      const lacePositions =
-        Array.from(
-          document.querySelectorAll(
-            'input[name="female[lacePosition][]"]:checked'
-          )
-        )
-          .map((input) => input.value)
-          .join(", ") || "Not selected";
-      laceDetails = `Source: ${laceSource}, Color: ${laceColor}, Image: ${laceImage}, Positions: ${lacePositions}`;
-    }
-    const buttons =
-      document.querySelector('input[name="female[buttons]"]:checked')?.value ||
-      "Not selected";
-    let buttonDetails = "None";
-    let buttonPrice = 0;
-    if (buttons === "yes") {
-      const buttonStyle =
-        document.getElementById("buttonStyle").value || "Not selected";
-      const buttonImage = getImageName(
-        document.getElementById("buttonImage").value
-      );
-      const buttonStyleImage = getImageName(
-        document.getElementById("buttonStyleImage").value
-      );
-      buttonPrice = 25; // Fixed price for fabric covered buttons
-      buttonDetails = `Style: ${buttonStyle}, Image: ${buttonImage}, Style Image: ${buttonStyleImage}`;
-    }
-    const bottomType =
-      document.getElementById("bottomType").value || "Not selected";
-    const bottomSize =
-      document.getElementById("bottomSize").value || "Not selected";
+      document.getElementById("customSleeveLength").value;
+    const damaan = document.getElementById("damaan").value;
+    const damaanImage = document.getElementById("damaanImage").value;
+    const lace = document.querySelector(
+      'input[name="female[lace]"]:checked'
+    )?.value;
+    const laceSource = document.getElementById("laceSource").value;
+    const laceColor = document.getElementById("laceColor").value;
+    const laceImage = document.getElementById("topLaceImage").value;
+    const lacePosition = document.querySelector(
+      'input[name="female[lacePosition][]"]:checked'
+    )?.value;
+    const buttons = document.querySelector(
+      'input[name="female[buttons]"]:checked'
+    )?.value;
+    const buttonStyle = document.getElementById("buttonStyle").value;
+    const buttonImage = document.getElementById("buttonImage").value;
+    const buttonStyleImage = document.getElementById("buttonStyleImage").value;
+    const bottomType = document.getElementById("bottomType").value;
+    const bottomSize = document.getElementById("bottomSize").value;
     const customBottomLength =
-      document.getElementById("customBottomLength").value || "Not selected";
-    const bottomStyleImage = getImageName(
-      document.getElementById("bottomStyleImage").value
-    );
-    const bottomLace =
-      document.querySelector('input[name="female[bottomLace]"]:checked')
-        ?.value || "Not selected";
-    let bottomLaceDetails = "None";
-    if (bottomLace === "yes") {
-      const bottomLaceSource =
-        document.getElementById("bottomLaceSource").value || "Not selected";
-      const bottomLaceColor =
-        document.getElementById("bottomLaceColor").value || "Not selected";
-      const bottomLaceImage = getImageName(
-        document.getElementById("bottomLaceImage").value
-      );
-      bottomLaceDetails = `Source: ${bottomLaceSource}, Color: ${bottomLaceColor}, Image: ${bottomLaceImage}`;
-    }
-    const dupattaLace =
-      document.querySelector('input[name="female[dupattaLace]"]:checked')
-        ?.value || "Not selected";
-    let dupattaLaceDetails = "None";
-    if (dupattaLace === "yes") {
-      const dupattaLaceSource =
-        document.getElementById("dupattaLaceSource").value || "Not selected";
-      const dupattaLaceColor =
-        document.getElementById("dupattaLaceColor").value || "Not selected";
-      const dupattaLaceImage = getImageName(
-        document.getElementById("dupattaLaceImage").value
-      );
-      const dupattaLacePosition =
-        document.querySelector(
-          'input[name="female[dupattaLacePosition]"]:checked'
-        )?.value || "Not selected";
-      dupattaLaceDetails = `Source: ${dupattaLaceSource}, Color: ${dupattaLaceColor}, Image: ${dupattaLaceImage}, Position: ${dupattaLacePosition}`;
-    }
-    const fullName =
-      document.getElementById("fullName").value || "Not provided";
-    const email = document.getElementById("email").value || "Not provided";
-    const streetAddress =
-      document.getElementById("streetAddress").value || "Not provided";
-    const city = document.getElementById("city").value || "Not provided";
-    const postalCode =
-      document.getElementById("postalCode").value || "Not provided";
-    const phone = document.getElementById("phone").value || "Not provided";
-    const suitTypeButton = document.querySelector("#suitTypeGroup .btn.active");
-    const suitTypePrice = suitTypeButton
-      ? suitTypeButton.getAttribute("data-price")
-      : 0;
-    const summaryItems = [
-      `Suit Type: ${suitType} - PKR ${suitTypePrice}`,
-      `Top Size: ${topSize}`,
-      `Style: ${style}`,
-      `Neck Style: ${neckStyle}`,
-      `Custom Top Length: ${customTopLength} inches`,
-      `Sleeve Length: ${sleeveLength}`,
-      `Sleeve Style Image: ${sleeveStyleImage}`,
-      `Custom Sleeve Length: ${customSleeveLength} inches`,
-      `Damaan: ${damaan}`,
-      `Damaan Image: ${damaanImage}`,
-      `Lace: ${lace} (${laceDetails})`,
-    ];
+      document.getElementById("customBottomLength").value;
+    const bottomStyleImage = document.getElementById("bottomStyleImage").value;
+    const bottomLace = document.querySelector(
+      'input[name="female[bottomLace]"]:checked'
+    )?.value;
+    const bottomLaceSource = document.getElementById("bottomLaceSource").value;
+    const bottomLaceColor = document.getElementById("bottomLaceColor").value;
+    const bottomLaceImage = document.getElementById("bottomLaceImage").value;
+    const dupattaLace = document.querySelector(
+      'input[name="female[dupattaLace]"]:checked'
+    )?.value;
+    const dupattaLaceSource =
+      document.getElementById("dupattaLaceSource").value;
+    const dupattaLaceColor = document.getElementById("dupattaLaceColor").value;
+    const dupattaLaceImage = document.getElementById("dupattaLaceImage").value;
+    const dupattaLacePosition = document.querySelector(
+      'input[name="female[dupattaLacePosition]"]:checked'
+    )?.value;
 
-    if (lace === "yes" && laceSource === "library") {
-      const selectedLaceImage = document.querySelector(
-        "#laceImages img.selected"
-      );
-      if (selectedLaceImage) {
-        const lacePrice = selectedLaceImage.getAttribute("data-price");
-        summaryItems.push(`Top Lace: ${laceImage} - PKR ${lacePrice} per gazz`);
+    if (suitType) {
+      const suitNames = {
+        "1piece": "Top Piece",
+        "2pieceTD": "Top and Dupatta",
+        "2pieceTB": "Top and Bottom",
+        "3piece": "Top, Bottom, and Dupatta",
+      };
+      addSummaryItem("Suit Type", suitNames[suitType] || "Not selected");
+    }
+    if (topSize) addSummaryItem("Top Size", topSize);
+    if (style) addSummaryItem("Style", style);
+    if (neckStyle) addSummaryItem("Neck Style", neckStyle);
+    if (styleImage)
+      addSummaryItem("Neck Style Preview", getImageName(styleImage));
+    if (customTopLength)
+      addSummaryItem("Custom Top Length", `${customTopLength} inches`);
+    if (sleeveLength) addSummaryItem("Sleeve Length", `${sleeveLength} inches`);
+    if (sleeveStyleImage)
+      addSummaryItem("Sleeve Style Preview", getImageName(sleeveStyleImage));
+    if (customSleeveLength)
+      addSummaryItem("Custom Sleeve Length", `${customSleeveLength} inches`);
+    if (damaan) addSummaryItem("Damaan", damaan);
+    if (damaanImage)
+      addSummaryItem("Damaan Preview", getImageName(damaanImage));
+    if (lace)
+      addSummaryItem("Add Lace on Damaan", lace === "yes" ? "Yes" : "No");
+    if (lace === "yes") {
+      addSummaryItem("Lace Source", laceSource || "Not selected");
+      if (laceSource === "library") {
+        addSummaryItem("Lace Color", laceColor || "Not selected");
+        addSummaryItem("Top Lace Preview", getImageName(laceImage));
       }
+      addSummaryItem("Lace Position", lacePosition || "Not selected");
     }
-
+    if (buttons)
+      addSummaryItem("Add Buttons", buttons === "yes" ? "Yes" : "No");
     if (buttons === "yes") {
-      summaryItems.push(
-        `Fabric Covered Buttons: PKR ${buttonPrice} (${buttonDetails})`
+      addSummaryItem("Button Style", buttonStyle || "Not selected");
+      addSummaryItem("Button Preview", getImageName(buttonImage));
+      addSummaryItem(
+        "Button Placket Style Preview",
+        getImageName(buttonStyleImage)
       );
-    } else {
-      summaryItems.push(`Buttons: None`);
     }
-
-    summaryItems.push(
-      `Bottom Type: ${bottomType}`,
-      `Bottom Size: ${bottomSize}`,
-      `Custom Bottom Length: ${customBottomLength} inches`,
-      `Bottom Style Image: ${bottomStyleImage}`,
-      `Bottom Lace: ${bottomLace} (${bottomLaceDetails})`
-    );
-
-    if (bottomLace === "yes" && bottomLaceSource === "library") {
-      const selectedBottomLaceImage = document.querySelector(
-        "#bottomLaceImages img.selected"
-      );
-      if (selectedBottomLaceImage) {
-        const bottomLacePrice =
-          selectedBottomLaceImage.getAttribute("data-price");
-        summaryItems.push(
-          `Bottom Lace: ${bottomLaceImage} - PKR ${bottomLacePrice} per gazz`
-        );
+    if (bottomType) addSummaryItem("Bottom Type", bottomType);
+    if (bottomSize) addSummaryItem("Bottom Size", bottomSize);
+    if (customBottomLength)
+      addSummaryItem("Custom Bottom Length", `${customBottomLength} inches`);
+    if (bottomStyleImage)
+      addSummaryItem("Bottom Style Preview", getImageName(bottomStyleImage));
+    if (bottomLace)
+      addSummaryItem("Add Lace on Bottom", bottomLace === "yes" ? "Yes" : "No");
+    if (bottomLace === "yes") {
+      addSummaryItem("Bottom Lace Source", bottomLaceSource || "Not selected");
+      if (bottomLaceSource === "library") {
+        addSummaryItem("Bottom Lace Color", bottomLaceColor || "Not selected");
+        addSummaryItem("Bottom Lace Preview", getImageName(bottomLaceImage));
       }
     }
-
-    summaryItems.push(`Dupatta Lace: ${dupattaLace} (${dupattaLaceDetails})`);
-    if (dupattaLace === "yes" && dupattaLaceSource === "library") {
-      const selectedDupattaLaceImage = document.querySelector(
-        "#dupattaLaceImages img.selected"
+    if (dupattaLace)
+      addSummaryItem(
+        "Add Lace on Dupatta",
+        dupattaLace === "yes" ? "Yes" : "No"
       );
-      if (selectedDupattaLaceImage) {
-        const dupattaLacePrice =
-          selectedDupattaLaceImage.getAttribute("data-price");
-        summaryItems.push(
-          `Dupatta Lace: ${dupattaLaceImage} - PKR ${dupattaLacePrice} per gazz`
+    if (dupattaLace === "yes") {
+      addSummaryItem(
+        "Dupatta Lace Source",
+        dupattaLaceSource || "Not selected"
+      );
+      if (dupattaLaceSource === "library") {
+        addSummaryItem(
+          "Dupatta Lace Color",
+          dupattaLaceColor || "Not selected"
         );
+        addSummaryItem("Dupatta Lace Preview", getImageName(dupattaLaceImage));
       }
-    }
-
-    summaryItems.push(
-      `Full Name: ${fullName}`,
-      `Email: ${email}`,
-      `Street Address: ${streetAddress}`,
-      `City: ${city}`,
-      `Postal Code: ${postalCode}`,
-      `Phone: ${phone}`
-    );
-
-    summaryItems.forEach((item) => {
-      const li = document.createElement("li");
-      li.textContent = item;
-      summaryList.appendChild(li);
-    });
-
-    const laceSections = [
-      { radioName: "lace", sourceId: "laceSource" },
-      { radioName: "bottomLace", sourceId: "bottomLaceSource" },
-      { radioName: "dupattaLace", sourceId: "dupattaLaceSource" },
-    ];
-    const laceSelected = laceSections.some(({ radioName, sourceId }) => {
-      const lace = document.querySelector(
-        `input[name="female[${radioName}]"]:checked`
-      )?.value;
-      const source = document.getElementById(sourceId).value;
-      return lace === "yes" && source === "library";
-    });
-    if (laceSelected) {
-      const disclaimerLi = document.createElement("li");
-      disclaimerLi.textContent =
-        "Note: Lace prices are per gazz. The total price is estimated based on standard usage.";
-      disclaimerLi.style.fontWeight = "bold";
-      summaryList.appendChild(disclaimerLi);
+      addSummaryItem(
+        "Dupatta Lace Position",
+        dupattaLacePosition || "Not selected"
+      );
     }
   } else if (activeTab === "male") {
-    const style = document.getElementById("maleStyle").value || "Not selected";
-    const size = document.getElementById("maleSize").value || "Not selected";
-    const customTopLength =
-      document.getElementById("maleCustomTopLength").value || "Not selected";
-    const collarStyle =
-      document.getElementById("maleCollarStyle").value || "Not selected";
-    const collarImage = getImageName(
-      document.getElementById("maleCollarImage").value
-    );
-    const damaan =
-      document.getElementById("maleDamaan").value || "Not selected";
-    const damaanImage = getImageName(
-      document.getElementById("maleDamaanImage").value
-    );
-    const buttons =
-      document.querySelector('input[name="male[buttons]"]:checked')?.value ||
-      "Not selected";
-    let buttonDetails = "None";
-    if (buttons === "yes") {
-      const buttonType =
-        document.getElementById("maleButtonType").value || "Not selected";
-      const buttonStyle =
-        document.getElementById("maleButtonStyle").value || "Not selected";
-      const buttonImage = getImageName(
-        document.getElementById("maleButtonImage").value
-      );
-      const buttonStyleImage = getImageName(
-        document.getElementById("maleButtonStyleImage").value
-      );
-      buttonDetails = `Type: ${buttonType}, Style: ${buttonStyle}, Image: ${buttonImage}, Style Image: ${buttonStyleImage}`;
-    }
-    const sleeves =
-      document.getElementById("maleSleeves").value || "Not selected";
-    const sleevesImage = getImageName(
-      document.getElementById("maleSleevesImage").value
-    );
-    const bottomType =
-      document.getElementById("maleBottomType").value || "Not selected";
-    const bottomSize =
-      document.getElementById("maleBottomSize").value || "Not selected";
-    const customBottomLength =
-      document.getElementById("maleCustomBottomLength").value || "Not selected";
-    const bottomStyleImage = getImageName(
-      document.getElementById("maleBottomStyleImage").value
-    );
-    const fullName =
-      document.getElementById("fullName").value || "Not provided";
-    const email = document.getElementById("email").value || "Not provided";
-    const streetAddress =
-      document.getElementById("streetAddress").value || "Not provided";
-    const city = document.getElementById("city").value || "Not provided";
-    const postalCode =
-      document.getElementById("postalCode").value || "Not provided";
-    const phone = document.getElementById("phone").value || "Not provided";
-    const summaryItems = [
-      `Style: ${style}`,
-      `Size: ${size}`,
-      `Custom Top Length: ${customTopLength} inches`,
-      `Collar Style: ${collarStyle}`,
-      `Collar Image: ${collarImage}`,
-      `Damaan: ${damaan}`,
-      `Damaan Image: ${damaanImage}`,
-      `Sleeves: ${sleeves}`,
-      `Sleeves Image: ${sleevesImage}`,
-      `Bottom Type: ${bottomType}`,
-      `Bottom Size: ${bottomSize}`,
-      `Custom Bottom Length: ${customBottomLength} inches`,
-      `Bottom Style Image: ${bottomStyleImage}`,
-      `Stitching: PKR 1500`,
-      `Buttons: ${buttons} (${buttonDetails})`,
-    ];
+    const style = document.getElementById("maleStyle").value;
+    const size = document.getElementById("maleSize").value;
+    const customTopLength = document.getElementById(
+      "maleCustomTopLength"
+    ).value;
+    const collarStyle = document.getElementById("maleCollarStyle").value;
+    const collarImage = document.getElementById("maleCollarImage").value;
+    const damaan = document.getElementById("maleDamaan").value;
+    const damaanImage = document.getElementById("maleDamaanImage").value;
+    const buttons = document.querySelector(
+      'input[name="male[buttons]"]:checked'
+    )?.value;
+    const buttonSource = document.getElementById("maleButtonSource").value;
+    const buttonStyle = document.getElementById("maleButtonStyle").value;
+    const buttonImage = document.getElementById("maleButtonImage").value;
+    const buttonStyleImage = document.getElementById(
+      "maleButtonStyleImage"
+    ).value;
+    const sleeves = document.getElementById("maleSleeves").value;
+    const sleevesImage = document.getElementById("maleSleevesImage").value;
+    const bottomType = document.getElementById("maleBottomType").value;
+    const bottomSize = document.getElementById("maleBottomSize").value;
+    const customBottomLength = document.getElementById(
+      "maleCustomBottomLength"
+    ).value;
+    const bottomStyleImage = document.getElementById(
+      "maleBottomStyleImage"
+    ).value;
 
+    if (style) addSummaryItem("Style", style);
+    if (size) addSummaryItem("Size", size);
+    if (customTopLength)
+      addSummaryItem("Custom Top Length", `${customTopLength} inches`);
+    if (collarStyle) addSummaryItem("Collar Style", collarStyle);
+    if (collarImage)
+      addSummaryItem("Collar Preview", getImageName(collarImage));
+    if (damaan) addSummaryItem("Damaan", damaan);
+    if (damaanImage)
+      addSummaryItem("Damaan Preview", getImageName(damaanImage));
+    if (buttons)
+      addSummaryItem("Add Buttons", buttons === "yes" ? "Yes" : "No");
     if (buttons === "yes") {
-      const buttonTypeButton = document.querySelector(
-        "#maleButtonTypeGroup .btn.active"
-      );
-      if (buttonTypeButton) {
-        const buttonPrice = buttonTypeButton.getAttribute("data-price");
-        summaryItems.push(`Buttons: ${buttonType} - PKR ${buttonPrice}`);
+      addSummaryItem("Button Source", buttonSource || "Not selected");
+      if (buttonSource === "library") {
+        addSummaryItem("Button Preview", getImageName(buttonImage));
+      }
+      addSummaryItem("Button Style", buttonStyle || "Not selected");
+      if (buttonStyle)
+        addSummaryItem("Button Style Preview", getImageName(buttonStyleImage));
+    }
+    if (sleeves) {
+      addSummaryItem("Sleeves", sleeves);
+      if (sleeves === "Cuff") {
+        addSummaryItem(
+          "Cuff Sleeves Extra",
+          "PKR 100 (includes 2 buttons per sleeve, total 4 buttons)"
+        );
       }
     }
-
-    summaryItems.forEach((item) => {
-      const li = document.createElement("li");
-      li.textContent = item;
-      summaryList.appendChild(li);
-    });
+    if (sleevesImage)
+      addSummaryItem("Sleeves Preview", getImageName(sleevesImage));
+    if (bottomType) addSummaryItem("Bottom Type", bottomType);
+    if (bottomSize) addSummaryItem("Bottom Size", bottomSize);
+    if (customBottomLength)
+      addSummaryItem("Custom Bottom Length", `${customBottomLength} inches`);
+    if (bottomStyleImage)
+      addSummaryItem("Bottom Style Preview", getImageName(bottomStyleImage));
   }
+
   const totalPrice = calculateTotalPrice();
-  const totalLi = document.createElement("li");
-  totalLi.innerHTML = `<strong>Total Price: PKR ${totalPrice} <br>(Estimated. Final amount will be confirmed via call.)</strong>`;
-  summaryList.appendChild(totalLi);
+  document.getElementById(
+    "summaryList"
+  ).innerHTML += `<div><strong>Total Price: PKR ${totalPrice}</strong></div>`;
+  // Set hidden input for total price
+  let totalPriceInput = document.getElementById("totalPriceInput");
+  if (!totalPriceInput) {
+    totalPriceInput = document.createElement("input");
+    totalPriceInput.type = "hidden";
+    totalPriceInput.id = "totalPriceInput";
+    totalPriceInput.name = "totalPrice";
+    document.querySelector("form").appendChild(totalPriceInput);
+  }
+  totalPriceInput.value = totalPrice;
 }
 
-document.querySelectorAll("input, select, textarea").forEach((element) => {
-  element.addEventListener("change", function () {
-    updateSummary();
-    updateProgress();
-  });
-  element.addEventListener("input", function () {
+function addSummaryItem(name, value) {
+  const li = document.createElement("li");
+  li.textContent = `${name}: ${value}`;
+  document.getElementById("summaryList").appendChild(li);
+}
+
+document.querySelectorAll("input, select, textarea").forEach((input) => {
+  input.addEventListener("change", () => {
     updateSummary();
     updateProgress();
   });
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-  document
-    .querySelectorAll('#female [name^="female"], #male [name^="male"]')
-    .forEach((field) => {
-      field.required = false;
-    });
-  ["fullName", "email", "streetAddress", "city", "postalCode", "phone"].forEach(
-    (id) => {
-      const field = document.getElementById(id);
-      if (field) field.required = true;
-    }
-  );
-  if (document.querySelector(".tab-pane.active").id === "female") {
-    document.getElementById("suitType").required = true;
-    document.getElementById("laceNo").required = true;
-    document.getElementById("buttonsNo").required = true;
-    document.getElementById("sleeveStyleImage").required = true;
-  }
+document.querySelectorAll(".nav-tabs .nav-link").forEach((tab) => {
+  tab.addEventListener("click", updateActiveTab);
+});
+
+document
+  .getElementById("customizationForm")
+  .addEventListener("submit", function (e) {
+    e.preventDefault();
+    updateSummary();
+    updateProgress();
+    alert("Order submitted successfully!");
+    this.submit();
+  });
+
+window.addEventListener("load", () => {
   populateSleeveStyleImages();
-  setupButtonImages();
+  updateStyleImages();
+  updateDamaanImages();
+  updateButtonOptions();
+  updateButtonStyleImages();
+  updateBottomStyleImages();
+  updateLaceOptions();
+  updateBottomLaceOptions();
+  updateDupattaLaceOptions();
+  updateMaleCollarImages();
+  updateMaleDamaanImages();
+  updateMaleButtonOptions();
+  updateMaleButtonStyleImages();
+  updateMaleSleevesImages();
+  updateMaleBottomStyleImages();
   updateActiveTab();
   updateSummary();
   updateProgress();
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-  const urlParams = new URLSearchParams(window.location.search);
-  const status = urlParams.get("status");
-  const message = urlParams.get("message");
-  if (status === "success") {
-    alert(
-      "Order submitted successfully! You will receive a confirmation email soon."
-    );
-  } else if (status === "error" && message) {
-    alert("Error: " + decodeURIComponent(message));
-  }
 });

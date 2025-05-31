@@ -18,6 +18,9 @@ include 'header.php';
                 <div class="progress-bar-fill" style="width: 0%"></div>
             </div>
         </div>
+        <p class="disclaimer text-center mt-2" style="color: #ff4d4d; font-weight: 500;">
+            Please select only one tab (Female or Male) for your order. The order summary will reflect data from the active tab only.
+        </p>
 
         <ul class="nav nav-tabs justify-content-center" id="genderTabs" role="tablist">
             <li class="nav-item" role="presentation">
@@ -41,18 +44,34 @@ include 'header.php';
                             <label for="suitType" class="form-label">Select Suit Type:<span class="required-asterisk">*</span></label>
                             <div id="suitTypeGroup" class="row btn-group" role="group" aria-label="Suit Type">
                                 <div class="col-lg-3 col-md-6 mb-2">
-                                    <button type="button" class="btn btn-outline-primary w-100" data-value="1piece" data-price="1500">1 Piece (Top)<br>PKR 1500</button>
+                                    <button type="button" class="btn btn-outline-primary w-100 text-start" data-value="1piece" data-price="1500">
+                                        <img src="images/1-piece.PNG" class="img-fluid mb-2" alt="1 Piece" style="max-height:80px;">
+                                        <div>1 Piece (Top)<br>PKR 1500</div>
+                                    </button>
                                 </div>
                                 <div class="col-lg-3 col-md-6 mb-2">
-                                    <button type="button" class="btn btn-outline-primary w-100" data-value="2pieceTD" data-price="2000">2 Piece (Top and Dupatta)<br>PKR 2000</button>
+                                    <button type="button" class="btn btn-outline-primary w-100 text-start" data-value="2pieceTD" data-price="2000">
+                                        <img src="images/1-piece.PNG" class="img-fluid mb-2" alt="2 Piece TD" style="max-height:80px;">
+                                        <img src="images/dupatta.png" class="img-fluid mb-2" alt="2 Piece TD" style="max-height:40px;">
+                                        <div>2 Piece (Top and Dupatta)<br>PKR 2000</div>
+                                    </button>
                                 </div>
                                 <div class="col-lg-3 col-md-6 mb-2">
-                                    <button type="button" class="btn btn-outline-primary w-100" data-value="2pieceTB" data-price="2000">2 Piece (Top and Bottom)<br>PKR 2000</button>
+                                    <button type="button" class="btn btn-outline-primary w-100 text-start" data-value="2pieceTB" data-price="2000">
+                                        <img src="images/1-piece.PNG" class="img-fluid mb-2" alt="2 Piece TB" style="max-height:80px;">
+                                        <img src="images/shalwar/male/style_1.PNG" class="img-fluid mb-2" alt="2 Piece TB" style="max-height:80px;">
+                                        <div>2 Piece (Top and Bottom)<br>PKR 2000</div>
+                                    </button>
                                 </div>
                                 <div class="col-lg-3 col-md-6 mb-2">
-                                    <button type="button" class="btn btn-outline-primary w-100" data-value="3piece" data-price="2500">3 Piece (Top, Bottom, Dupatta)<br>PKR 2500</button>
+                                    <button type="button" class="btn btn-outline-primary w-100 text-start" data-value="3piece" data-price="2500">
+                                        <img src="images/3-piece.PNG" class="img-fluid mb-2" alt="3 Piece" style="max-height:80px;">
+                                        <div>3 Piece (Top, Bottom, Dupatta)<br>PKR 2500</div>
+                                    </button>
                                 </div>
                             </div>
+
+
                             <input type="hidden" id="suitType" name="female[suitType]" value="">
                             <p class="disclaimer mt-2">Disclaimer: These are base prices. Total price will be calculated at checkout.</p>
                         </div>
@@ -125,8 +144,8 @@ include 'header.php';
                             <label for="neckStyle" class="form-label">Select Neck Style:<span class="required-asterisk">*</span></label>
                             <div id="neckStyleGroup" class="btn-group" role="group" aria-label="Neck Style">
                                 <button type="button" class="btn btn-outline-primary" data-value="V-Neck">V-Neck</button>
-                                <button type="button" class="btn btn-outline-primary" data-value="Collar">Collar</button>
-                                <button type="button" class="btn btn-outline-primary" data-value="Round">Round</button>
+                                <button type="button" class="btn btn-outline-primary" data-value="Collar">Boat Neckline</button>
+                                <button type="button" class="btn btn-outline-primary" data-value="Round">Round-Neck</button>
                             </div>
                             <div class="image-gallery mb-3" id="styleImages"></div>
                             <input type="hidden" id="neckStyle" name="female[neckStyle]" value="">
@@ -164,6 +183,7 @@ include 'header.php';
                         <input type="hidden" id="damaanImage" name="female[damaanImage]">
                         <div class="mb-3">
                             <label class="form-label">Do you want to add lace on Damaan?<span class="required-asterisk">*</span></label>
+                            <p class="disclaimer" style="color: #555; font-style: italic;">Disclaimer: Lace prices are per gazz. The total price is estimated based on standard usage via call.</p>
                             <div>
                                 <input type="radio" class="form-check-input" name="female[lace]" id="laceYes" value="yes">
                                 <label for="laceYes" class="form-check-label">Yes</label>
@@ -186,7 +206,7 @@ include 'header.php';
                                     <input type="text" class="form-control" id="laceColor" name="female[laceColor]" placeholder="e.g., Red">
                                 </div>
                                 <p id="selectedLacePriceTop">Selected Lace Price: PKR 0 per gazz</p>
-                                <div class="container image-gallery mb-3" id="laceImages">
+                                <div class="container image-gallery mb-3" id="topLaceImages">
                                     <div class="row">
                                         <div class="col-md-2 text-center mb-4">
                                             <img src="images/beil-styles/style_1.jpg" alt="Beil Style 1" data-price="170" class="img-fluid">
@@ -197,7 +217,7 @@ include 'header.php';
                                             <p>PKR 220 per gazz</p>
                                         </div>
                                         <div class="col-md-2 text-center mb-4">
-                                            <img src="images/beil-styles/style_3.jpg" alt="Beil Style 3" data-price="170" class="img-fluid">
+                                            <img src="images/beil-styles/style_3.jpg" alt "Beil Style 3" data-price="170" class="img-fluid">
                                             <p>PKR 170 per gazz</p>
                                         </div>
                                         <div class="col-md-2 text-center mb-4">
@@ -258,7 +278,7 @@ include 'header.php';
                                         </div>
                                     </div>
                                 </div>
-                                <input type="hidden" id="laceImage" name="female[laceImage]">
+                                <input type="hidden" id="topLaceImage" name="female[laceImage]">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Where to add lace:<span class="required-asterisk">*</span></label>
@@ -344,6 +364,7 @@ include 'header.php';
                             </div>
                             <input type="hidden" id="bottomType" name="female[bottomType]" value="">
                         </div>
+                        <div class="image-gallery mb-3" id="bottomStyleImages"></div>
                         <div class="mb-3">
                             <label for="bottomSize" class="form-label">Select Bottom Size:<span class="required-asterisk">*</span></label>
                             <div id="bottomSizeGroup" class="btn-group" role="group" aria-label="Bottom Size">
@@ -401,10 +422,11 @@ include 'header.php';
                             <label for="customBottomLength" class="form-label">Custom Bottom Length (inches): (optional)</label>
                             <input type="number" class="form-control" id="customBottomLength" name="female[customBottomLength]" placeholder="e.g., 38">
                         </div>
-                        <div class="image-gallery mb-3" id="bottomStyleImages"></div>
+
                         <input type="hidden" id="bottomStyleImage" name="female[bottomStyleImage]">
                         <div class="mb-3">
                             <label class="form-label">Do you want to add lace?<span class="required-asterisk">*</span></label>
+                            <p class="disclaimer" style="color: #555; font-style: italic;">Disclaimer: Lace prices are per gazz. The total price is estimated based on standard usage via call.</p>
                             <div>
                                 <input type="radio" class="form-check-input" name="female[bottomLace]" id="bottomLaceYes" value="yes">
                                 <label for="bottomLaceYes" class="form-check-label">Yes</label>
@@ -427,7 +449,7 @@ include 'header.php';
                                     <input type="text" class="form-control" id="bottomLaceColor" name="female[bottomLaceColor]" placeholder="e.g., Red">
                                 </div>
                                 <p id="selectedLacePriceBottom">Selected Lace Price: PKR 0 per gazz</p>
-                                <div class="container image-gallery mb-3" id="laceImages">
+                                <div class="container image-gallery mb-3" id="bottomLaceImages">
                                     <div class="row">
                                         <div class="col-md-2 text-center mb-4">
                                             <img src="images/beil-styles/style_1.jpg" alt="Beil Style 1" data-price="170" class="img-fluid">
@@ -507,6 +529,7 @@ include 'header.php';
                         <h4>Dupatta Section</h4>
                         <div class="mb-3">
                             <label class="form-label">Do you want to add lace on your dupatta?<span class="required-asterisk">*</span></label>
+                            <p class="disclaimer" style="color: #555; font-style: italic;">Disclaimer: Lace prices are per gazz. The total price is estimated based on standard usage via call.</p>
                             <div>
                                 <input type="radio" class="form-check-input" name="female[dupattaLace]" id="dupattaLaceYes" value="yes">
                                 <label for="dupattaLaceYes" class="form-check-label">Yes</label>
@@ -529,7 +552,7 @@ include 'header.php';
                                     <input type="text" class="form-control" id="dupattaLaceColor" name="female[dupattaLaceColor]" placeholder="e.g., Red">
                                 </div>
                                 <p id="selectedLacePriceDupatta">Selected Lace Price: PKR 0 per gazz</p>
-                                <div class="container image-gallery mb-3" id="laceImages">
+                                <div class="container image-gallery mb-3" id="dupattaLaceImages">
                                     <div class="row">
                                         <div class="col-md-2 text-center mb-4">
                                             <img src="images/beil-styles/style_1.jpg" alt="Beil Style 1" data-price="170" class="img-fluid">
@@ -606,11 +629,24 @@ include 'header.php';
                             <div class="mb-3">
                                 <label class="form-label">Where to add lace:<span class="required-asterisk">*</span></label>
                                 <div>
-                                    <input type="radio" class="form-check-input" name="female[dupattaLacePosition]" id="dupattaLacePallu" value="pallu">
-                                    <label for="dupattaLacePallu" class="form-check-label">Only on Pallu</label>
-                                    <input type="radio" class="form-check-input" name="female[dupattaLacePosition]" id="dupattaLaceAllSides" value="allSides">
+                                    <input type="radio" class="form-check-input" name="female[dupattaLacePosition]"
+                                        id="dupattaLacePallu" value="pallu" onchange="toggleDupattaImage(this.value)">
+                                    <label for="dupattaLacePallu" class="form-check-label me-3">Only on Pallu</label>
+
+                                    <input type="radio" class="form-check-input" name="female[dupattaLacePosition]"
+                                        id="dupattaLaceAllSides" value="allSides" onchange="toggleDupattaImage(this.value)">
                                     <label for="dupattaLaceAllSides" class="form-check-label">All Four Sides</label>
                                 </div>
+
+                                <!-- Images (initially hidden) -->
+                                <div id="palluImage" class="mt-3" style="display: none;">
+                                    <img src="images/dupatta/simple.PNG" alt="Only on Pallu" class="img-fluid" style="max-height: 200px;">
+                                </div>
+                                <div id="allSidesImage" class="mt-3" style="display: none;">
+                                    <img src="images/dupatta/four_side_lace.PNG" alt="All Four Sides" class="img-fluid" style="max-height: 200px;">
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
@@ -622,9 +658,9 @@ include 'header.php';
                     <div class="card">
                         <h3 style="color: #20c997;">Male Clothing Customization</h3>
                         <div class="mb-3">
-                            <label for="maleStyle" class="form-label">Select Style:<span class="required-asterisk">*</span></label>
+                            <label for="maleStyle" class="form-label">Select Suit Type:<span class="required-asterisk">*</span></label>
                             <div id="maleStyleGroup" class="btn-group" role="group" aria-label="Male Style">
-                                <button type="button" class="btn btn-outline-primary" data-value="Kurta">Kurta</button>
+                                <button type="button" class="btn btn-outline-primary" data-value="Kurta">Kurta Shalwar</button>
                             </div>
                             <input type="hidden" id="maleStyle" name="male[style]" value="">
                         </div>
@@ -722,19 +758,112 @@ include 'header.php';
                         </div>
                         <div id="maleButtonOptions" class="section">
                             <div class="mb-3">
-                                <label for="maleButtonType" class="form-label">Select Button Type:<span class="required-asterisk">*</span></label>
-                                <div id="maleButtonTypeGroup" class="btn-group" role="group" aria-label="Male Button Type">
-                                    <button type="button" class="btn btn-outline-primary" data-value="metal" data-price="100">Metal</button>
-                                    <button type="button" class="btn btn-outline-primary" data-value="fabric" data-price="150">Fabric Covered</button>
-                                    <button type="button" class="btn btn-outline-primary" data-value="plastic" data-price="80">Plastic (20 colors)</button>
-                                    <button type="button" class="btn btn-outline-primary" data-value="wooden" data-price="120">Wooden</button>
-                                    <button type="button" class="btn btn-outline-primary" data-value="pearls" data-price="200">Basic Pearls</button>
+                                <label class="form-label">Button Source:<span class="required-asterisk">*</span></label>
+                                <div id="maleButtonSourceGroup" class="btn-group" role="group" aria-label="Male Button Source">
+                                    <button type="button" class="btn btn-outline-primary" data-value="own">I will provide my own</button>
+                                    <button type="button" class="btn btn-outline-primary" data-value="library">Choose from the button library</button>
                                 </div>
-                                <input type="hidden" id="maleButtonType" name="male[buttonType]" value="">
-                                <p id="selectedMaleButtonPrice">Selected Button Type Price: PKR 0</p>
+                                <input type="hidden" id="maleButtonSource" name="male[buttonSource]" value="">
                             </div>
-                            <div class="image-gallery mb-3" id="maleButtonImages"></div>
-                            <input type="hidden" id="maleButtonImage" name="male[buttonImage]">
+                            <div id="maleButtonLibraryOptions" class="section">
+                                <div class="mb-3">
+                                    <label class="form-label">Select Button Style:<span class="required-asterisk">*</span></label>
+                                    <div class="container image-gallery mb-3" id="maleButtonImages">
+                                        <div class="row">
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_1.webp" alt="Button Style 1" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_2.webp" alt="Button Style 2" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_3.webp" alt="Button Style 3" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_4.webp" alt="Button Style 4" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_5.webp" alt="Button Style 5" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_6.webp" alt="Button Style 6" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_7.webp" alt="Button Style 7" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_8.webp" alt="Button Style 8" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_9.webp" alt="Button Style 9" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_10.webp" alt="Button Style 10" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_11.webp" alt="Button Style 11" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_12.webp" alt="Button Style 12" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_13.webp" alt="Button Style 13" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_14.webp" alt="Button Style 14" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_15.webp" alt="Button Style 15" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_16.webp" alt="Button Style 16" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_17.webp" alt="Button Style 17" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_18.webp" alt="Button Style 18" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_19.webp" alt="Button Style 19" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_20.webp" alt="Button Style 20" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_21.webp" alt="Button Style 21" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                            <div class="col-md-2 text-center mb-4">
+                                                <img src="images/buttons/male/style_22.webp" alt="Button Style 22" data-price="25" class="img-fluid">
+                                                <p>PKR 25</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="maleButtonImage" name="male[buttonImage]">
+                                </div>
+                                <p id="selectedMaleButtonPrice">Selected Button Price: PKR 0</p>
+                            </div>
                             <div class="mb-3">
                                 <label for="maleButtonStyle" class="form-label">Select Button Style:<span class="required-asterisk">*</span></label>
                                 <div id="maleButtonStyleGroup" class="btn-group" role="group" aria-label="Male Button Style">
@@ -764,6 +893,7 @@ include 'header.php';
                             </div>
                             <input type="hidden" id="maleBottomType" name="male[bottomType]" value="">
                         </div>
+                        <div class="image-gallery mb-3" id="maleBottomStyleImages"></div>
                         <div class="mb-3">
                             <label for="maleBottomSize" class="form-label">Select Bottom Size:<span class="required-asterisk">*</span></label>
                             <div id="maleBottomSizeGroup" class="btn-group" role="group" aria-label="Male Bottom Size">
@@ -851,7 +981,7 @@ include 'header.php';
                             <label for="maleCustomBottomLength" class="form-label">Custom Bottom Length (inches): (optional)</label>
                             <input type="number" class="form-control" id="maleCustomBottomLength" name="male[customBottomLength]" placeholder="e.g., 40">
                         </div>
-                        <div class="image-gallery mb-3" id="maleBottomStyleImages"></div>
+
                         <input type="hidden" id="maleBottomStyleImage" name="male[bottomStyleImage]">
                     </div>
                 </div>
@@ -896,6 +1026,11 @@ include 'header.php';
         </div>
     </form>
 </div>
-
+<script>
+    function toggleDupattaImage(selectedValue) {
+        document.getElementById('palluImage').style.display = selectedValue === 'pallu' ? 'block' : 'none';
+        document.getElementById('allSidesImage').style.display = selectedValue === 'allSides' ? 'block' : 'none';
+    }
+</script>
 <script src="js/services.js"></script>
 <?php include 'footer.php'; ?>
