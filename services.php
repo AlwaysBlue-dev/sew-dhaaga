@@ -660,7 +660,12 @@ include 'header.php';
                         <div class="mb-3">
                             <label for="maleStyle" class="form-label">Select Suit Type:<span class="required-asterisk">*</span></label>
                             <div id="maleStyleGroup" class="btn-group" role="group" aria-label="Male Style">
-                                <button type="button" class="btn btn-outline-primary" data-value="Kurta">Kurta Shalwar</button>
+                                <button type="button" class="btn btn-outline-primary" data-value="Kurta">Kurta Shalwar
+                               
+                                  <img src="images/kurta_shalwar_male.PNG" class="img-fluid mb-2" alt="1 Piece" style="max-height:70px;">
+                                
+                                </button>
+                               
                             </div>
                             <input type="hidden" id="maleStyle" name="male[style]" value="">
                         </div>
