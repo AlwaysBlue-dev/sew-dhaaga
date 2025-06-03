@@ -644,6 +644,7 @@ function updateMaleButtonStyleImages() {
   const buttonStyleImageInput = document.getElementById("maleButtonStyleImage");
   buttonStyleImages.innerHTML = "";
   buttonStyleImageInput.value = "";
+  
   const imagePaths = {
     double: ["images/buttons/male/double_placket.PNG"],
     single: ["images/buttons/male/single_placket.PNG"],
@@ -675,15 +676,8 @@ function updateMaleSleevesImages() {
   const sleeves = document.getElementById("maleSleeves").value;
   const sleevesImages = document.getElementById("maleSleevesImages");
   const sleevesImageInput = document.getElementById("maleSleevesImage");
-  const disclaimer =
-    document.getElementById("maleSleevesDisclaimer") ||
-    document.createElement("p");
-  disclaimer.id = "maleSleevesDisclaimer";
-  disclaimer.className = "disclaimer mt-2";
-  disclaimer.style.display = sleeves === "Cuff" ? "block" : "none";
-  disclaimer.textContent =
-    "Disclaimer: Cuff sleeves include two buttons per sleeve (total 4 buttons) for an additional PKR 100.";
-  sleevesImages.parentNode.insertBefore(disclaimer, sleevesImages.nextSibling);
+  
+  
   sleevesImages.innerHTML = "";
   sleevesImageInput.value = "";
   const imagePaths = {
@@ -820,8 +814,11 @@ function calculateTotalPrice() {
       });
       total += buttonPrice;
     }
+    if (document.getElementById("buttonStyle").value === "double") {
+      total += 100; // Additional cost for double sleeves
+    }
   } else if (activeTab === "male") {
-    total += 1500; // Base price for male kurta and bottom
+    total += 2500; // Base price for male kurta and bottom
     if (
       document.getElementById("maleButtonsYes").checked &&
       document.getElementById("maleButtonSource").value === "library"
@@ -838,6 +835,9 @@ function calculateTotalPrice() {
     }
     if (document.getElementById("maleSleeves").value === "Cuff") {
       total += 100; // Additional cost for cuff sleeves
+    }
+     if (document.getElementById("maleButtonStyle").value === "double") {
+      total += 100; // Additional cost for double sleeves
     }
   }
 
@@ -982,6 +982,12 @@ function updateSummary() {
         "Button Placket Style Preview",
         getImageName(buttonStyleImage)
       );
+       if (buttonStyle === "double") {
+        addSummaryItem(
+          "Buttons Extra",
+          "PKR 100 (includes 4 buttons)"
+        );
+      }
     }
     if (bottomType) addSummaryItem("Bottom Type", bottomType);
     if (bottomSize) addSummaryItem("Bottom Size", bottomSize);
@@ -1070,6 +1076,12 @@ function updateSummary() {
       addSummaryItem("Button Style", buttonStyle || "Not selected");
       if (buttonStyle)
         addSummaryItem("Button Style Preview", getImageName(buttonStyleImage));
+       if (buttonStyle === "double") {
+        addSummaryItem(
+          "Buttons Extra",
+          "PKR 100 (includes 4 buttons)"
+        );
+      }
     }
     if (sleeves) {
       addSummaryItem("Sleeves", sleeves);

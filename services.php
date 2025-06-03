@@ -348,6 +348,8 @@ include 'header.php';
                                     <button type="button" class="btn btn-outline-primary" data-value="double">Double Placket</button>
                                     <button type="button" class="btn btn-outline-primary" data-value="single">Single Placket</button>
                                 </div>
+                                  <div> <p class="disclaimer mt-2">Disclaimer: Double Placket include four buttons for an additional of PKR 100.</p></div>
+                              
                                 <input type="hidden" id="buttonStyle" name="female[buttonStyle]" value="">
                             </div>
                             <div class="image-gallery mb-3" id="buttonStyleImages"></div>
@@ -872,9 +874,12 @@ include 'header.php';
                             <div class="mb-3">
                                 <label for="maleButtonStyle" class="form-label">Select Button Style:<span class="required-asterisk">*</span></label>
                                 <div id="maleButtonStyleGroup" class="btn-group" role="group" aria-label="Male Button Style">
+                                   
                                     <button type="button" class="btn btn-outline-primary" data-value="double">Double Placket</button>
                                     <button type="button" class="btn btn-outline-primary" data-value="single">Single Placket</button>
+                                    
                                 </div>
+                                <div> <p class="disclaimer mt-2">Disclaimer: Double Placket include four buttons for an additional of PKR 100.</p></div>
                                 <input type="hidden" id="maleButtonStyle" name="male[buttonStyle]" value="">
                             </div>
                             <div class="image-gallery mb-3" id="maleButtonStyleImages"></div>
@@ -886,6 +891,7 @@ include 'header.php';
                                 <button type="button" class="btn btn-outline-primary" data-value="Straight">Straight Sleeves</button>
                                 <button type="button" class="btn btn-outline-primary" data-value="Cuff">Cuff Sleeves</button>
                             </div>
+                             <div> <p class="disclaimer mt-2">Disclaimer: Cuff sleeves include two buttons per sleeve (total 4 buttons) for an additional of PKR 100.</p></div>
                             <input type="hidden" id="maleSleeves" name="male[sleeves]" value="">
                         </div>
                         <div class="image-gallery mb-3" id="maleSleevesImages"></div>
